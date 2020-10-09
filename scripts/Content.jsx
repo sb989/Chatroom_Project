@@ -1,21 +1,20 @@
-    
 import * as React from 'react';
-
 import { Socket } from './Socket';
 import { Send } from './Send';
+
 export function Content() {
     const[messages,setMessages] = React.useState([]);
     const[username,setUsername]= React.useState('');
    
-    
     function firstConnect(){
         React.useEffect(()=>{
             Socket.on('connected',(data)=>{
                 console.log("connected");
-                setUsername(data['username'])
+                setUsername(data['username']);
                 data['msgs'].forEach((msg)=>{
                     setMessages(msg);
                 });
+                
                 console.log(data['username']);
             });
         });
@@ -31,6 +30,7 @@ export function Content() {
         });
     }
     
+    
     firstConnect();
     
     return (
@@ -39,7 +39,7 @@ export function Content() {
                 <ol>
                     {messageFormat()}
                 </ol>
-                <Send/>
+                <Send username={username}/>
         </div>
     );
 }

@@ -78,6 +78,17 @@ def generate_username():
         db.session.close()
         return ''
         
+@socketio.on('new message')
+def new_message(data):
+    print("New Message!")
+    print(data)
+    sender = data['sender']
+    datetime = data['datetime']
+    message = data['message']
+    print(sender)
+    print(datetime)
+    print(message)
+
 @socketio.on('connect')
 def on_connect():
     print('Someone connected!')

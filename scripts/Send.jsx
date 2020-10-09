@@ -1,26 +1,33 @@
 import * as React from 'react';
 import { Socket } from './Socket';
+import { Content } from './Content';
+import { username } from './Content';
+import moment from 'moment';
 
-export function Send()
+export function Send(username)
 {
     const [input,setInput]= React.useState('');
     
     function newInp(curr)
     {
-        setInput(curr);
+        setInput(curr.target.value);
     }
     
-    function submit()
+    function submit(e)
     {
         Socket.emit('new message',{
-            'message':input
+            'message':input,
+            'sender':username['username'],
+            'datetime':moment().format('MMMM Do YYYY, h:mm:ss a')
         });
+        e.preventDefault();
     }
     
     return (
         <div>
             <form onSubmit={submit}>
-                <input onInput={newInp}/>
+            
+                <input type ='text'onInput={newInp}/>
                 <button>send</button>
             </form>
         </div>
