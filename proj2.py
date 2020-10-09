@@ -6,7 +6,7 @@ import flask_sqlalchemy
 import flask_socketio
 import models 
 import random
-
+import datetime
 
 app = flask.Flask(__name__)
 dotenv_path = join(dirname(__file__), '../keys/sql.env')
@@ -83,11 +83,13 @@ def new_message(data):
     print("New Message!")
     print(data)
     sender = data['sender']
-    datetime = data['datetime']
+    dt = data['datetime']
     message = data['message']
     print(sender)
-    print(datetime)
+    print(dt)
     print(message)
+    dt = datetime.datetime.strptime(dt, '%Y-%m-%d %H:%M:%S.%f')
+    print(dt)
 
 @socketio.on('connect')
 def on_connect():

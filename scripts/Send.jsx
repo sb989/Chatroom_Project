@@ -18,7 +18,7 @@ export function Send(username)
         Socket.emit('new message',{
             'message':input,
             'sender':username['username'],
-            'datetime':moment().format('MMMM Do YYYY, h:mm:ss a')
+            'datetime':moment().format('YYYY-MM-DD HH:mm:ss.SSSSSS')
         });
         e.preventDefault();
     }
