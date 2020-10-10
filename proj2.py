@@ -7,6 +7,7 @@ import flask_socketio
 import models 
 import random
 import datetime
+from helper_functions import generate_username
 
 app = flask.Flask(__name__)
 dotenv_path = join(dirname(__file__), '../keys/sql.env')
@@ -27,87 +28,30 @@ app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 db = flask_sqlalchemy.SQLAlchemy(app)
 db.app = app
 
-adjectives = [
-    'finicky',
-    'roomy',
-    'innocent',
-    'zonked',
-    'silent',
-    'sudden',
-    'nutritious',
-    'outstanding',
-    'rare',
-    'abashed',
-    'materialistic',
-    'nonstop',
-    'longing',
-    'lacking',
-    'waiting',
-    'puzzling',
-    'severe',
-    'selfish',
-    'misty',
-    'disagreeable']
-    
-nouns = ['hippo',
-    'bee',
-    'giraffe',
-    'toaster',
-    'cereal',
-    'car',
-    'bus',
-    'lemur',
-    'bird',
-    'monkey']
 
-def generate_username():
-    username = adjectives[random.randint(0,19)] + '_'+nouns[random.randint(0,9)]
-    try:
-        dup = models.Username.query.filter_by(username=username).first()
-        print('dup is ',dup)
-        if dup == None:
-            print('returning ',username)
-            return username
-        while dup != None:
-            username+= str(random.randint(0,2000))
-            dup = models.Username.query.filter_by(username=username).first()
-            
-        return username
-    except:
-        print('error')
-        db.session.close()
-        return ''
-        
 @socketio.on('new message')
 def new_message(data):
     print("New Message!")
-    print(data)
     sender = data['sender']
     dt = data['datetime']
     message = data['message']
-    print(sender)
-    print(message)
     dt = datetime.datetime.strptime(dt, '%Y-%m-%d %H:%M:%S.%f')
-    print(dt)
     msg = models.Message(dt,sender,message)
     db.session.add(msg)
     db.session.commit()
     table = models.Message.query.all()
-    print('tablie is',table)
     socketio.emit(data,broadcast=True)
 
 @socketio.on('connect')
 def on_connect():
     print('Someone connected!')
     msgs = models.Message.query.all()
-    username = generate_username()
-    # table = models.Username.query.all()
-    # print('tablie is',table)
+    username = generate_username(db)
+
     user = models.Username(username)
     db.session.add(user)
     db.session.commit()
     message = {'messages':[]}
-    print(msgs)
     for msg in msgs:
         message['messages'].append({'m':msg.message,'sender':msg.username,'dt':str(msg.date_time)})
     socketio.emit('connected', {

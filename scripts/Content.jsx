@@ -36,7 +36,6 @@ export function Content() {
     }
     
     function messageFormat(){
-        console.log(messages);
         return messages.map((m,index)=><li key={index}>{m['dt']}<br/>{m['sender']+": "+m['text']}</li>);
     }
     
@@ -45,7 +44,7 @@ export function Content() {
             Socket.on('new message',(data)=>{
                 if(data['sender'] == username)
                     return;
-                
+                addMessage(data['message'],data['dt'],data['sender']);
             });
         });
     }
