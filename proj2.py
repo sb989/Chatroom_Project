@@ -86,19 +86,33 @@ def new_message(data):
     dt = data['datetime']
     message = data['message']
     print(sender)
-    print(dt)
     print(message)
     dt = datetime.datetime.strptime(dt, '%Y-%m-%d %H:%M:%S.%f')
     print(dt)
+    msg = models.Message(dt,sender,message)
+    db.session.add(msg)
+    db.session.commit()
+    table = models.Message.query.all()
+    print('tablie is',table)
 
 @socketio.on('connect')
 def on_connect():
     print('Someone connected!')
     msgs = models.Message.query.all()
+    username = generate_username()
+    # table = models.Username.query.all()
+    # print('tablie is',table)
+    user = models.Username(username)
+    db.session.add(user)
+    db.session.commit()
+    message = {'messages':[]}
+    print(msgs)
+    for msg in msgs:
+        message['messages'].append({'m':msg.message,'sender':msg.username,'dt':str(msg.date_time)})
     socketio.emit('connected', {
         'test': 'Connected',
-        'msgs':msgs,
-        'username':generate_username()
+        'msgs':message,
+        'username':username
     })
     
 @socketio.on('disconnect')

@@ -11,10 +11,20 @@ export function Content() {
             Socket.on('connected',(data)=>{
                 console.log("connected");
                 setUsername(data['username']);
-                data['msgs'].forEach((msg)=>{
-                    setMessages(msg);
-                });
-                
+                var messages = data['msgs']['messages'];
+                var size = messages.length;
+                var i;
+                var message,text,sender,dt;
+                setMessages([]);
+                for(i=0;i<size;i++)
+                {
+                    text = messages[i]['m'];
+                    sender = messages[i]['sender'];
+                    dt = messages[i]['dt'];
+                    message = dt +"\n "+sender+": "+text;
+                    setMessages(m=>m.concat(message));
+                    
+                }
                 console.log(data['username']);
             });
         });
@@ -25,9 +35,8 @@ export function Content() {
     }
     
     function messageFormat(){
-        return messages.map(m=>{
-            <li>{m}</li>
-        });
+        console.log(messages);
+        return messages.map((m,index)=><li key={index}>{m}</li>);
     }
     
     

@@ -25,7 +25,7 @@ class Message(db.Model):
         self.message = msg
     
     def __repr__(self):
-        return '<Message : %s %s %s>' %(self.date_time, self.username, self.message)
+        return 'Message : %s %s %s' %(self.date_time, self.username, self.message,)
 
 class Username(db.Model):
     username = db.Column(db.String(120),primary_key=True)
@@ -35,4 +35,4 @@ class Username(db.Model):
         self.username = user
         
     def __repr__(self):
-        return '<Username %s>' %self.username
+        return '%s' %self.username
