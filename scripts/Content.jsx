@@ -26,7 +26,7 @@ export function Content() {
                 }
                 console.log(data['username']);
             });
-        });
+        },[]);
     }
     
     function addMessage(text,dt,sender)
