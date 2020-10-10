@@ -18,27 +18,37 @@ export function Content() {
                 setMessages([]);
                 for(i=0;i<size;i++)
                 {
-                    text = messages[i]['m'];
-                    sender = messages[i]['sender'];
-                    dt = messages[i]['dt'];
-                    message = dt +"\n "+sender+": "+text;
-                    setMessages(m=>m.concat(message));
-                    
+                    message = messages[i];
+                    text = message['m'];
+                    sender = message['sender'];
+                    dt = message['dt'];
+                    addMessage(text,dt,sender);
                 }
                 console.log(data['username']);
             });
         });
     }
     
-    function sendMessage(){
-        React.useEffect()
+    function addMessage(text,dt,sender)
+    {
+        var message ={'dt':dt,'sender':sender,'text':text};
+        setMessages(m=>m.concat(message));
     }
     
     function messageFormat(){
         console.log(messages);
-        return messages.map((m,index)=><li key={index}>{m}</li>);
+        return messages.map((m,index)=><li key={index}>{m['dt']}<br/>{m['sender']+": "+m['text']}</li>);
     }
     
+    function receiveMessage(){
+        React.useEffect(()=>{
+            Socket.on('new message',(data)=>{
+                if(data['sender'] == username)
+                    return;
+                
+            });
+        });
+    }
     
     firstConnect();
     
@@ -48,7 +58,7 @@ export function Content() {
                 <ol>
                     {messageFormat()}
                 </ol>
-                <Send username={username}/>
+                <Send username={username} addMessage={addMessage}/>
         </div>
     );
 }

@@ -94,6 +94,7 @@ def new_message(data):
     db.session.commit()
     table = models.Message.query.all()
     print('tablie is',table)
+    socketio.emit(data,broadcast=True)
 
 @socketio.on('connect')
 def on_connect():
