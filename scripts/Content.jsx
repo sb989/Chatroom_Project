@@ -42,6 +42,7 @@ export function Content() {
     function receiveMessage(){
         React.useEffect(()=>{
             Socket.on('new message',(data)=>{
+                console.log(data);
                 if(data['sender'] == username)
                     return;
                 addMessage(data['message'],data['dt'],data['sender']);
