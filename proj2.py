@@ -38,7 +38,11 @@ def new_message(data):
     db.session.add(msg)
     db.session.commit()
     table = models.Message.query.all()
-    socketio.emit(data,broadcast=True)
+    socketio.emit('new_message',{
+        'message':message,
+        'dt':dt,
+        'sender':sender
+        },broadcast=True)
 
 @socketio.on('connect')
 def on_connect():
