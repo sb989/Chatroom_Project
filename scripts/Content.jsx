@@ -51,7 +51,7 @@ export function Content() {
     }
     
     firstConnect();
-    
+    receiveMessage();
     return (
         <div>
             <h1>CHAT</h1>
