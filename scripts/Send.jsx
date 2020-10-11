@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Socket } from './Socket';
-import { Content } from './Content';
+// import { Content } from './Content';
 import moment from 'moment';
 
 export function Send(params)
@@ -22,6 +22,7 @@ export function Send(params)
         e.preventDefault();
         var form = document.getElementById("form");
         form.reset();
+        console.log(params['username']);
         params['addMessage'](input,dt,params['username']);
     }
     

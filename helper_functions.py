@@ -1,5 +1,6 @@
 import random
 import flask_sqlalchemy
+
 import models 
 
 
@@ -36,19 +37,21 @@ nouns = ['hippo',
     'bird',
     'monkey']
 
-def generate_username(db):
+def generate_username(SessionLocal):
+    db = SessionLocal()
     username = adjectives[random.randint(0,19)] + '_'+nouns[random.randint(0,9)]
+
     try:
-        dup = models.Username.query.filter_by(username=username).first()
+        dup = db.query(models.Username).filter(models.Username.username == username).first()
+        print('dup is',dup)
         if dup == None:
-            return username
-        while dup != None:
-            username+= str(random.randint(0,2000))
-            dup = models.Username.query.filter_by(username=username).first()
-            
+            user = models.Username(username)
+            db.add(user)
+            db.commit()
+            db.close()
         return username
-    except:
-        print('error')
-        db.session.close()
+    except Exception as e:
+        print('error',e)
+        db.close()
         return ''
         

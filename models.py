@@ -1,23 +1,13 @@
 import flask_sqlalchemy
-from proj2 import db
+from sqlalchemy import Column,Integer,String,DateTime,Text, ForeignKey
+from sqlalchemy.orm import relationship
+from proj2 import Base,engine
 
-
-class Usps(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    address = db.Column(db.String(120))
-    
-    def __init__(self, a):
-        self.address = a
-        
-    def __repr__(self):
-        return '<Usps address: %s>' % self.address 
-
-
-class Message(db.Model):
-    
-    date_time = db.Column(db.DateTime, primary_key=True)
-    username = db.Column(db.String(120),db.ForeignKey('username.username'),primary_key=True)
-    message = db.Column(db.Text)
+class Message(Base):
+    __tablename__ = "Message"
+    date_time = Column(DateTime, primary_key=True)
+    username = Column(String(120),ForeignKey('Username.username'),primary_key=True)
+    message = Column(Text)
     
     def __init__(self,dt,user,msg):
         self.date_time = dt
@@ -27,12 +17,15 @@ class Message(db.Model):
     def __repr__(self):
         return 'Message : %s %s %s' %(self.date_time, self.username, self.message,)
 
-class Username(db.Model):
-    username = db.Column(db.String(120),primary_key=True)
-    messages = db.relationship('Message',backref='user',lazy=True)
+class Username(Base):
+    __tablename__ = "Username"
+    username = Column(String(120),primary_key=True)
+    messages = relationship('Message',backref='user',lazy=True)
     
     def __init__(self,user):
         self.username = user
         
     def __repr__(self):
         return '%s' %self.username
+        
+Base.metadata.create_all(bind=engine)
