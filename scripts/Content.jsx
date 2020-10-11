@@ -5,8 +5,24 @@ import {MessageBox} from './MessageBox'
 export function Content() {
     const[messages,setMessages] = React.useState([]);
     const[username,setUsername]= React.useState(null);
-   
+    const[roomCount,setRoomCount]=React.useState(0);
+    function receiveCount()
+    {
+        React.useEffect(()=>{
+            Socket.on('room_count',(data)=>{
+                setRoomCount(data['count']);
+            })
+            return ()=>{Socket.removeEventListener('room_count');}
+        });
+    }
+    receiveCount();
+    return (
+    <div>
+        <h2>Room Count: {roomCount}</h2>
+        <MessageBox username={username} setUsername={setUsername} messages={messages} setMessages={setMessages}/>
+    </div>
     
-    return (<MessageBox username={username} setUsername={setUsername} 
-    messages={messages} setMessages={setMessages}/>);
+    );
+    
+    
 }

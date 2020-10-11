@@ -77,6 +77,10 @@ def on_connect():
         'msgs':message,
         'username':username
         })
+    emit('room_count',{
+        'count':connections
+        }
+    ,broadcast=True)
     db.close()
     
 @socketio.on('disconnect')
@@ -85,7 +89,10 @@ def on_disconnect():
     connections -=1
     print ('Someone disconnected!')
     print(connections," client(s) are now connected")
-
+    emit('room_count',{
+        'count':connections
+        }
+    ,broadcast=True)
 
 @app.route('/')
 def index():
