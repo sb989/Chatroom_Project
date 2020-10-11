@@ -40,16 +40,17 @@ def new_message(data):
     table = models.Message.query.all()
     socketio.emit('new_message',{
         'message':message,
-        'dt':dt,
+        'dt':str(dt),
         'sender':sender
         },broadcast=True)
-
+    db.session.close()
 @socketio.on('connect')
 def on_connect():
     print('Someone connected!')
+    print(" client(s) are now connected")
     msgs = models.Message.query.all()
     username = generate_username(db)
-
+    print(username)
     user = models.Username(username)
     db.session.add(user)
     db.session.commit()
@@ -61,17 +62,17 @@ def on_connect():
         'msgs':message,
         'username':username
     })
-    
+    db.session.close()
 @socketio.on('disconnect')
 def on_disconnect():
     print ('Someone disconnected!')
-
+    db.session.close()
 @app.route('/')
 def index():
     models.db.create_all()
     
     db.session.commit()
-    
+    db.session.close()
     return flask.render_template("index.html")
     
     
