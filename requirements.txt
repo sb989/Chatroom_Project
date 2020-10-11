@@ -3,4 +3,4 @@ python-dotenv
 Flask-SQLAlchemy
 flask_socketio
 eventlet
-psycopg2==2.4.4 
+psycopg2
