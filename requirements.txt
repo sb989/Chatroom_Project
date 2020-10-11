@@ -3,3 +3,4 @@ python-dotenv
 Flask-SQLAlchemy
 flask_socketio
 eventlet
+python-psycopg2
