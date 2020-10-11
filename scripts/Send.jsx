@@ -6,6 +6,8 @@ import moment from 'moment';
 export function Send(params)
 {
     const [input,setInput]= React.useState('');
+    var runAgain;
+    var event;
     function newInp(curr)
     {
         setInput(curr.target.value);
@@ -13,18 +15,32 @@ export function Send(params)
     
     function submit(e)
     {
+        e.preventDefault();
+        if(params['username']===null)
+        {
+            runAgain=true;
+            event = e;
+            return;      
+        }
         var dt = moment().format('YYYY-MM-DD HH:mm:ss.SSSSSS');
+        if(params['username']===null)
+            return;
         Socket.emit('new message',{
             'message':input,
             'sender':params['username'],
             'datetime':dt
         });
-        e.preventDefault();
+        
         var form = document.getElementById("form");
         form.reset();
         console.log(params['username']);
         params['addMessage'](input,dt,params['username']);
+        runAgain = false;
     }
+    
+    if(runAgain)
+        submit(event);
+
     
     return (
         <div>

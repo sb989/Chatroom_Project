@@ -2,7 +2,6 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 import os
 import flask
-import flask_sqlalchemy
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -29,17 +28,9 @@ SessionLocal = sessionmaker(autocommit=False,autoflush=False,bind=engine)
 Base=declarative_base()
 
 
-# db = flask_sqlalchemy.SQLAlchemy()
 app = flask.Flask(__name__)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
-# app.config['SQLALCHEMY_POOL_RECYCLE'] = 20
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db.init_app(app)
-# with app.app_context():
-#     db.create_all()
 
-# db.app = app
 
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
@@ -83,6 +74,7 @@ def on_connect():
         'username':username
         })
     db.close()
+    
 @socketio.on('disconnect')
 def on_disconnect():
     print ('Someone disconnected!')

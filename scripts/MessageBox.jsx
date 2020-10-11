@@ -8,6 +8,8 @@ export function MessageBox(params){
     var messages = params['messages'];
     var setMessages = params['setMessages'];
     
+    
+    
     function firstConnect(){
         React.useEffect(()=>{
             Socket.on('connected',(data)=>{
@@ -44,14 +46,20 @@ export function MessageBox(params){
     function receiveMessage(){
         React.useEffect(()=>{
             Socket.on('new message',(data)=>{
-                if(username===null)
+                if(username===null)    
                     return;
                 if(data['sender'] === username)
                     return;
                 addMessage(data['message'],data['dt'],data['sender']);
+                
             });
-        },[username]);
+            return ()=>{
+                Socket.removeEventListener('new message');
+            }
+        });
     }
+    
+    
     
     firstConnect();
     receiveMessage();

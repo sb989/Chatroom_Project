@@ -1,4 +1,3 @@
-import flask_sqlalchemy
 from sqlalchemy import Column,Integer,String,DateTime,Text, ForeignKey
 from sqlalchemy.orm import relationship
 from proj2 import Base,engine
