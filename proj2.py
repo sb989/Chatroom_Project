@@ -11,18 +11,19 @@ import models
 import random
 import datetime
 from helper_functions import generate_username
+import logging
 
 
 dotenv_path = join(dirname(__file__), '../keys/sql.env')
 load_dotenv(dotenv_path)
 
-
+connections = 0
 sql_user = os.getenv('SQL_USER')
 sql_pwd = os.getenv('SQL_PASSWORD')
 dbuser = os.getenv('USER')
 database_uri = os.getenv('DATABASE_URL')
 
-engine = create_engine(database_uri,echo=True)
+engine = create_engine(database_uri,echo=False)
 SessionLocal = sessionmaker(autocommit=False,autoflush=False,bind=engine)
 
 Base=declarative_base()
@@ -30,8 +31,9 @@ Base=declarative_base()
 
 app = flask.Flask(__name__)
 
-
-
+log = logging.getLogger('werkzeug')
+log.disabled = True
+app.logger.disabled = True
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
 
@@ -59,12 +61,14 @@ def new_message(data):
 @socketio.on('connect')
 def on_connect():
     print('Someone connected!')
-    print(" client(s) are now connected")
+    global connections
+    connections +=1
+    print(connections," client(s) are now connected")
     db = SessionLocal()
     msgs = db.query(models.Message).all()
     username = generate_username(SessionLocal)
     print('username is ',username)
-    print(msgs)
+    
     message = {'messages':[]}
     for msg in msgs:
         message['messages'].append({'m':msg.message,'sender':msg.username,'dt':str(msg.date_time)})
@@ -77,7 +81,11 @@ def on_connect():
     
 @socketio.on('disconnect')
 def on_disconnect():
+    global connections
+    connections -=1
     print ('Someone disconnected!')
+    print(connections," client(s) are now connected")
+
 
 @app.route('/')
 def index():
@@ -87,5 +95,6 @@ if __name__ == '__main__':
     socketio.run(app,
         host=os.getenv('IP', '0.0.0.0'),
         port=int(os.getenv('PORT', 8080)),
-        debug=True
+        debug=True,
+        log_output=False
     )

@@ -43,7 +43,6 @@ def generate_username(SessionLocal):
 
     try:
         dup = db.query(models.Username).filter(models.Username.username == username).first()
-        print('dup is',dup)
         if dup == None:
             user = models.Username(username)
             db.add(user)
