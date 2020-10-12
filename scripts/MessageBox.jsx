@@ -40,7 +40,17 @@ export function MessageBox(params){
     }
     
     function messageFormat(){
-        return messages.map((m,index)=><li key={index}>{m['dt']}<br/>{m['sender']+": "+m['text']}</li>);
+        
+        return messages.map((m,index)=>divClass(m,index));
+    }
+    
+    function divClass(m,index)
+    {
+        var dClass = <div className="recepientBox"  key={index}><div className="recepientMessage" key={index}> {m['sender']}<br/>{m['text']}<br/></div></div>;
+        if(m['sender']===username)
+            dClass = <div className="senderBox" key={index}><div className="senderMessage" key={index}>{m['sender']}<br/>{m['text']}<br/></div></div>;
+       return dClass;
+       
     }
     
     function receiveMessage(){
@@ -67,9 +77,9 @@ export function MessageBox(params){
     return(
         <div>
             <h1>CHAT</h1>
-            <ol>
+            <div className ="messages">
                 {messageFormat()}
-            </ol>
+            </div>
             <Send username={params['username']} addMessage={addMessage}/>
         </div>
         )
