@@ -46,9 +46,9 @@ export function MessageBox(params){
     
     function divClass(m,index)
     {
-        var dClass = <div className="recepientBox"  key={index}><div className="recepientMessage" key={index}> {m['sender']}<br/>{m['text']}<br/></div></div>;
+        var dClass = <div className="receivedBox"  key={index}><div className="receivedMessage" key={index}> <div className="receivedMessageName">{m['sender']}</div><div className="receivedMessageText">{m['text']}</div></div></div>;
         if(m['sender']===username)
-            dClass = <div className="senderBox" key={index}><div className="senderMessage" key={index}>{m['sender']}<br/>{m['text']}<br/></div></div>;
+            dClass = <div className="sentBox" key={index}><div className="sentMessage" key={index}><div className="sentMessageName">{m['sender']}</div><div className="sentMessageText">{m['text']}</div></div></div>;
        return dClass;
        
     }
@@ -76,7 +76,7 @@ export function MessageBox(params){
     
     return(
         <div>
-            <h1>CHAT</h1>
+            <h1 className="Chat">CHAT</h1>
             <div className ="messages">
                 {messageFormat()}
             </div>

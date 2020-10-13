@@ -43,11 +43,11 @@ export function Send(params)
 
     
     return (
-        <div>
-            <form id="form" onSubmit={submit}>
+        <div className = "send">
+            <form id="form" className="form" onSubmit={submit}>
             
-                <input type ='text'onInput={newInp}/>
-                <button>send</button>
+                <input className = "sendInput" type ='text'onInput={newInp}/>
+                <button className = "sendButton">Send</button>
             </form>
         </div>
         

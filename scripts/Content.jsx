@@ -18,7 +18,7 @@ export function Content() {
     receiveCount();
     return (
     <div>
-        <h2>Room Count: {roomCount}</h2>
+        <h2 className="roomCount">Room Count: {roomCount}</h2>
         <MessageBox username={username} setUsername={setUsername} messages={messages} setMessages={setMessages}/>
     </div>
     
