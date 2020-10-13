@@ -6,6 +6,11 @@ export function Content() {
     const[messages,setMessages] = React.useState([]);
     const[username,setUsername]= React.useState(null);
     const[roomCount,setRoomCount]=React.useState(0);
+    
+    var element = document.getElementById(messages.length-1);
+    if(element)
+        element.scrollIntoView(false);
+        
     function receiveCount()
     {
         React.useEffect(()=>{
@@ -16,6 +21,7 @@ export function Content() {
         });
     }
     receiveCount();
+    
     return (
     <div>
         <h2 className="roomCount">Room Count: {roomCount}</h2>
