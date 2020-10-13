@@ -39,8 +39,8 @@ export function MessageBox(params){
     }
     
     function messageFormat(){
-        
-        return messages.map((m,index)=>divClass(m,index));
+        var copy = [...messages];
+        return copy.reverse().map((m,index)=>divClass(m,index));
     }
     
     function divClass(m,index)

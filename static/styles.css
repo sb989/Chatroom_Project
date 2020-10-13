@@ -20,7 +20,8 @@ body{
     border-color: #102E4A;
     border-width:.1vw;
     border-radius:.5vw;
-    
+    display:flex;
+    flex-direction:column-reverse;
 }
 
 .receivedBox{
