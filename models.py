@@ -7,12 +7,12 @@ class Message(Base):
     date_time = Column(DateTime, primary_key=True)
     username = Column(String(120),ForeignKey('Username.username'),primary_key=True)
     message = Column(Text)
-    
-    def __init__(self,dt,user,msg):
+    msg_type = Column(String(100))
+    def __init__(self,dt,user,msg,msg_type):
         self.date_time = dt
         self.username = user
         self.message = msg
-    
+        self.msg_type = msg_type
     def __repr__(self):
         return 'Message : %s %s %s' %(self.date_time, self.username, self.message,)
 

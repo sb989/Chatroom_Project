@@ -28,13 +28,14 @@ export function Send(params)
         Socket.emit('new message',{
             'message':input,
             'sender':params['username'],
-            'datetime':dt
+            'datetime':dt,
+            'msg_type':'text'
         });
         
         var form = document.getElementById("form");
         form.reset();
         console.log(params['username']);
-        params['addMessage'](input,dt,params['username']);
+        params['addMessage'](input,dt,params['username'],'text');
         runAgain = false;
     }
     

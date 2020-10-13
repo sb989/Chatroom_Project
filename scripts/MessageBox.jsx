@@ -16,24 +16,25 @@ export function MessageBox(params){
                 var messages = data['msgs']['messages'];
                 var size = messages.length;
                 var i;
-                var message,text,sender,dt;
+                var message,text,sender,dt,msg_type;
                 setMessages([]);
                 for(i=0;i<size;i++)
                 {
                     message = messages[i];
+                    msg_type = message['msg_type']
                     text = message['m'];
                     sender = message['sender'];
                     dt = message['dt'];
-                    addMessage(text,dt,sender);
+                    addMessage(text,dt,sender,msg_type);
                 }
                 console.log(data['username']);
             });
         },[]);
     }
     
-    function addMessage(text,dt,sender)
+    function addMessage(text,dt,sender,msg_type)
     {
-        var message ={'dt':dt,'sender':sender,'text':text};
+        var message ={'dt':dt,'sender':sender,'text':text,'msg_type':msg_type};
         setMessages(m=>m.concat(message));
        
     }
@@ -45,9 +46,27 @@ export function MessageBox(params){
     
     function divClass(m,index)
     {
-        var dClass = <div className="receivedBox" id={index} key={index}><div className="receivedMessage" key={index}> <div className="receivedMessageName">{m['sender']}</div><div className="receivedMessageText">{m['text']}</div></div></div>;
+        var cBox = "receivedBox"
+        var cMessage = "receivedMessage"
+        var cName = "receivedMessageName"
+        var cText = "receivedMessageText"
+        var dClass;
         if(m['sender']===username)
-            dClass = <div className="sentBox" id={index} key={index}><div className="sentMessage" key={index}><div className="sentMessageName">{m['sender']}</div><div className="sentMessageText">{m['text']}</div></div></div>;
+        {
+            cBox = "sentBox"
+            cMessage = "sentMessage"
+            cName = "sentMessageName"
+            cText = "sentMessageText"
+        }
+        if(m['msg_type']==='text')
+        {
+            dClass = <div className={cBox} id={index} key={index}><div className={cMessage} key={index}> <div className={cName}>{m['sender']}</div><div className={cText}>{m['text']}</div></div></div>;
+        }
+        else if(m['msg_type']==='img')
+        {
+            dClass = <div className={cBox} id={index} key={index}><div className={cMessage} key={index}> <div className={cName}>{m['sender']}</div><div className={cText}><img src={m['text']}></img></div></div></div>;
+        }
+            
        return dClass;
        
     }
@@ -59,7 +78,7 @@ export function MessageBox(params){
                     return;
                 if(data['sender'] === username)
                     return;
-                addMessage(data['message'],data['dt'],data['sender']);
+                addMessage(data['message'],data['dt'],data['sender'],data['msg_type']);
                 
             });
             return ()=>{
@@ -68,11 +87,24 @@ export function MessageBox(params){
         });
     }
     
+    function receiveBotMessage()
+    {
+        React.useEffect(()=>{
+            Socket.on('Bot',(data)=>{
+                console.log(data);
+                addMessage(data['message'],data['dt'],data['sender'],data['msg_type']);
+            });
+        
+            return ()=>{
+                Socket.removeEventListener('Bot');
+            }
+        });
+    }
   
     
     firstConnect();
     receiveMessage();
-   
+   receiveBotMessage();
     return(
         <div id ="messageBox">
             <h1 className="Chat">CHAT</h1>

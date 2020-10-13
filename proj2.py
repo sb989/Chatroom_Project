@@ -12,9 +12,13 @@ import random
 import datetime
 from helper_functions import generate_username
 import logging
-
+from  bot import Bot
 
 dotenv_path = join(dirname(__file__), '../keys/sql.env')
+load_dotenv(dotenv_path)
+dotenv_path = join(dirname(__file__),'../keys/translate.env')
+load_dotenv(dotenv_path)
+dotenv_path = join(dirname(__file__),'../keys/imagesearch.env')
 load_dotenv(dotenv_path)
 
 connections = 0
@@ -22,6 +26,8 @@ sql_user = os.getenv('SQL_USER')
 sql_pwd = os.getenv('SQL_PASSWORD')
 dbuser = os.getenv('USER')
 database_uri = os.getenv('DATABASE_URL')
+project_id = os.getenv('PROJECT_ID')
+image_id = os.getenv('IMAGE_ID')
 
 engine = create_engine(database_uri,echo=False)
 SessionLocal = sessionmaker(autocommit=False,autoflush=False,bind=engine)
@@ -36,8 +42,7 @@ log.disabled = True
 app.logger.disabled = True
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
-
-
+chatBot = Bot(project_id,image_id)
 
 @socketio.on('new message')
 def new_message(data):
@@ -45,8 +50,9 @@ def new_message(data):
     sender = data['sender']
     dt = data['datetime']
     message = data['message']
+    msg_type = data['msg_type']
     dt = datetime.datetime.strptime(dt, '%Y-%m-%d %H:%M:%S.%f')
-    msg = models.Message(dt,sender,message)
+    msg = models.Message(dt,sender,message,msg_type)
     db = SessionLocal()
     db.add(msg)
     db.commit()
@@ -55,9 +61,20 @@ def new_message(data):
     emit('new message',{
         'message':message,
         'dt':str(dt),
-        'sender':sender
+        'sender':sender,
+        'msg_type':msg_type
         },broadcast=True)
     
+    reply = chatBot.messageRead(message)
+    if(reply['type']!= None):
+        emit('Bot',{
+        'message':reply['data'],
+        'sender':chatBot.name,
+        'dt':str(datetime.datetime.now()),
+        'msg_type':reply['type']
+        },broadcast=True)
+    
+        
 @socketio.on('connect')
 def on_connect():
     print('Someone connected!')
@@ -71,7 +88,7 @@ def on_connect():
     
     message = {'messages':[]}
     for msg in msgs:
-        message['messages'].append({'m':msg.message,'sender':msg.username,'dt':str(msg.date_time)})
+        message['messages'].append({'m':msg.message,'sender':msg.username,'dt':str(msg.date_time),'msg_type':msg.msg_type})
     emit('connected', {
         'test': 'Connected',
         'msgs':message,
