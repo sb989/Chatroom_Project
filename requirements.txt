@@ -1,6 +1,9 @@
 Flask
 python-dotenv
-Flask-SQLAlchemy
+SQLAlchemy
+google-cloud-translate
 flask_socketio
 eventlet
 psycopg2
+requests
+Equation
