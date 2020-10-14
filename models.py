@@ -4,8 +4,11 @@ from proj2 import Base,engine
 
 class Message(Base):
     __tablename__ = "Message"
-    date_time = Column(DateTime, primary_key=True)
-    username = Column(String(120),ForeignKey('Username.username'),primary_key=True)
+    date_time = Column(DateTime, primary_key = True)
+    username = Column(String(120),ForeignKey(
+        'Username.username'),
+        primary_key = True
+        )
     message = Column(Text)
     msg_type = Column(String(100))
     def __init__(self,dt,user,msg,msg_type):
@@ -14,12 +17,16 @@ class Message(Base):
         self.message = msg
         self.msg_type = msg_type
     def __repr__(self):
-        return 'Message : %s %s %s' %(self.date_time, self.username, self.message,)
+        return 'Message : %s %s %s' %(
+            self.date_time, 
+            self.username, 
+            self.message,
+            )
 
 class Username(Base):
     __tablename__ = "Username"
-    username = Column(String(120),primary_key=True)
-    messages = relationship('Message',backref='user',lazy=True)
+    username = Column(String(120),primary_key = True)
+    messages = relationship('Message',backref = 'user',lazy = True)
     
     def __init__(self,user):
         self.username = user
@@ -27,4 +34,4 @@ class Username(Base):
     def __repr__(self):
         return '%s' %self.username
         
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind = engine)

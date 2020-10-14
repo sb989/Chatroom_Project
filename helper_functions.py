@@ -24,9 +24,11 @@ adjectives = [
     'severe',
     'selfish',
     'misty',
-    'disagreeable']
+    'disagreeable'
+    ]
     
-nouns = ['hippo',
+nouns = [
+    'hippo',
     'bee',
     'giraffe',
     'toaster',
@@ -35,14 +37,21 @@ nouns = ['hippo',
     'bus',
     'lemur',
     'bird',
-    'monkey']
+    'monkey'
+    ]
 
-def generate_username(SessionLocal):
-    db = SessionLocal()
-    username = adjectives[random.randint(0,19)] + '_'+nouns[random.randint(0,9)]
+def generateUsername(sessionLocal):
+    db = sessionLocal()
+    username = (adjectives[random.randint(0,19)] 
+                + '_'
+                +nouns[random.randint(0,9)])
 
     try:
-        dup = db.query(models.Username).filter(models.Username.username == username).first()
+        dup = db.query(
+            models.Username).filter(
+            models.Username.username == username
+            ).first(
+            )
         if dup == None:
             user = models.Username(username)
             db.add(user)
@@ -56,9 +65,9 @@ def generate_username(SessionLocal):
         
 def getSupportedLanguages(client, parent):
     try:
-        supportedLangs = client.get_supported_languages(parent=parent)
-        if(len(supportedLangs.languages)>0 ):
-            return supportedLangs
+        supported_langs = client.get_supported_languages(parent=parent)
+        if(len(supported_langs.languages)>0 ):
+            return supported_langs
         return None
     except:
         return None
@@ -80,34 +89,40 @@ def getMessageLanguage(client, parent, message):
 
 def translateFromSourceToTarget(client,parent,sourceLang,targetLang,message):
     try:
-        translatedMess = client.translate_text(
+        translated_mess = client.translate_text(
             request={
                 "parent": parent,
                 "contents": [message],
                 "mime_type": "text/plain",
                 "source_language_code": sourceLang,
                 "target_language_code": targetLang,
-            }
-        )
-        if(len(translatedMess.translations) > 0):
-            translatedMess = translatedMess.translations[0].translated_text
-            return translatedMess
+                }
+            )
+        if(len(translated_mess.translations) > 0):
+            translated_mess = translated_mess.translations[0].translated_text
+            return translated_mess
         return None
     except:
         return None
 
         
 def translateToRandomLang(client, parent,message):
-    supportedLangs = getSupportedLanguages(client, parent)
-    if(supportedLangs!=None):
-        numSupportedLangs = len(supportedLangs.languages)
-        targetLang = supportedLangs.languages[random.randint(0,numSupportedLangs-1)]
-        targetLang = targetLang.language_code
-        sourceLang = getMessageLanguage(client,parent,message)
-        if(sourceLang!=None):
-            translatedMess = translateFromSourceToTarget(client,parent,sourceLang,targetLang,message)
-            if(translatedMess!=None):
-                return translatedMess
+    supported_langs = getSupportedLanguages(client, parent)
+    if(supported_langs!=None):
+        num_supported_langs = len(supported_langs.languages)
+        target_lang = supported_langs.languages[
+            random.randint(
+            0,num_supported_langs-1)
+            ]
+        target_lang = target_lang.language_code
+        source_lang = getMessageLanguage(client,parent,message)
+        if(source_lang!=None):
+            translated_mess = translateFromSourceToTarget(
+                client,parent,
+                source_lang,
+                target_lang,message)
+            if(translated_mess!=None):
+                return translated_mess
     
     return None
 
