@@ -69,7 +69,8 @@ def getSupportedLanguages(client, parent):
         if(len(supported_langs.languages)>0 ):
             return supported_langs
         return None
-    except:
+    except Exception as e:
+        print("getSupportedLanguages error",e)
         return None
     
 def getMessageLanguage(client, parent, message):
@@ -84,7 +85,8 @@ def getMessageLanguage(client, parent, message):
             lang=lang.languages[0].language_code
             return lang
         return None
-    except:
+    except Exception as e:
+        print("getMessageLanguage error",e)
         return None
 
 def translateFromSourceToTarget(client,parent,sourceLang,targetLang,message):
@@ -102,7 +104,8 @@ def translateFromSourceToTarget(client,parent,sourceLang,targetLang,message):
             translated_mess = translated_mess.translations[0].translated_text
             return translated_mess
         return None
-    except:
+    except Exception as e:
+        print("translateFromSourceToTarget error",e)
         return None
 
         
@@ -126,5 +129,6 @@ def translateToRandomLang(client, parent,message):
                     return translated_mess
         
         return None
-    except:
+    except Exception as e:
+        print("translateToRandomLang error",e)
         return None

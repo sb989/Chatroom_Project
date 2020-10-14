@@ -48,17 +48,6 @@ class Bot:
         
     def funTranslate(self,message):
         err = "Error Translating. Sorry!"
-        # json_key = self.google_json.encode("ascii")
-        # json_key = base64.b64decode(json_key)
-        # json_key = json_key.decode("ascii")
-        # print(repr(json_key))
-        # json_key = json.loads(repr(json_key).strip('\''))
-        # credentials = service_account.Credentials.from_service_account_info(
-        #     json_key)
-        # scoped_credentials = credentials.with_scopes(
-        #     ['https://www.googleapis.com/auth/cloud-platform']
-        #     )
-
 
         client = translate.TranslationServiceClient()
         location = "global"
