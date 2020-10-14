@@ -2,9 +2,10 @@ from google.cloud import translate
 import random 
 from helper_functions import translateToRandomLang
 import requests
+from Equation import Expression
 
 class Bot:
-    commands = ['about','help','funtranslate',"image"]
+    commands = ['about','help','funtranslate',"image","math"]
     stringToMath = ''
     name=''
     project_id=''
@@ -19,7 +20,8 @@ class Bot:
         'Sends a short description of {} .'.format(self.name),
         'Sends a list of commands and what they do.',
         'Translates the message that follows into a random language.',
-        'Returns a picture of the message that follows.'
+        'Returns a picture of the message that follows.',
+        'Calculates simple math equations. Supported symbols are +, -, /, *, (, and ).'
         ]
         returnStr = ''
         for i in range(len(self.commands)):
@@ -49,6 +51,12 @@ class Bot:
         imgUrl = response["hits"][index]["previewURL"]
         return imgUrl
     
+    def math(self,equation):
+        result = Expression(equation[0])
+        if(result()==None):
+            return "Invalid Expression"
+        return result()
+    
     def unknownCommand(self,command):
         message = "Sorry. I don't recognize the command: "+ command+". To get a list of commands enter !! help."
         return message
@@ -73,6 +81,9 @@ class Bot:
             ret['type']='img'
             query = ' '.join(mList[2:])
             ret['data']= self.imageSearch(query)
+        elif(mList[1]==self.commands[4]):
+            ret['type']='text'
+            ret['data']=self.math(mList[2:])
         else:
             ret['type']='text'
             ret['data']= self.unknownCommand(mList[1])

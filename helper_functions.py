@@ -110,3 +110,4 @@ def translateToRandomLang(client, parent,message):
                 return translatedMess
     
     return None
+
