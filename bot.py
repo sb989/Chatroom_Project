@@ -1,7 +1,10 @@
 import random 
 import requests
+import json
+import base64
 
 from google.cloud import translate
+from google.oauth2 import service_account
 from Equation import Expression
 from helper_functions import translateToRandomLang
 
@@ -16,6 +19,7 @@ class Bot:
     name = ''
     project_id = ''
     image_id = ''
+    google_json = ''
     
     def aboutMessage(self):
         about_str = 'I am {}. Use me to translate,\
@@ -44,6 +48,18 @@ class Bot:
         
     def funTranslate(self,message):
         err = "Error Translating. Sorry!"
+        # json_key = self.google_json.encode("ascii")
+        # json_key = base64.b64decode(json_key)
+        # json_key = json_key.decode("ascii")
+        # print(repr(json_key))
+        # json_key = json.loads(repr(json_key).strip('\''))
+        # credentials = service_account.Credentials.from_service_account_info(
+        #     json_key)
+        # scoped_credentials = credentials.with_scopes(
+        #     ['https://www.googleapis.com/auth/cloud-platform']
+        #     )
+
+
         client = translate.TranslationServiceClient()
         location = "global"
         parent = f"projects/{self.project_id}/locations/{location}"
@@ -56,17 +72,21 @@ class Bot:
             return translated_mess
     
     def imageSearch(self,query):
-        query = query.replace(' ','+')
-        url = 'https://pixabay.com/api/?key={}&q={}&image_type=photo'\
-            .format(self.image_id,query)
-        response = requests.get(url)
-        response = response.json()
-        if("totalHits" not in response):
+        try:
+            query = query.replace(' ','+')
+            url = 'https://pixabay.com/api/?key={}&q={}&image_type=photo'\
+                .format(self.image_id,query)
+            response = requests.get(url)
+            print(response)
+            response = response.json()
+            if("totalHits" not in response):
+                return None
+            num_results = len(response["hits"])
+            index = random.randint(0,num_results-1)
+            imgUrl = response["hits"][index]["previewURL"]
+            return imgUrl
+        except:
             return None
-        num_results = len(response["hits"])
-        index = random.randint(0,num_results-1)
-        imgUrl = response["hits"][index]["previewURL"]
-        return imgUrl
     
     def math(self,equation):
         result = Expression(equation[0])
@@ -113,10 +133,11 @@ class Bot:
             ret['data'] = self.unknownCommand(m_list[1])
         return ret
     
-    def __init__(self,project_id,image_id,stm = '!!',name = 'ChatBot'):
+    def __init__(self,project_id,image_id,google_json,stm = '!!',name = 'ChatBot'):
         self.string_to_match = stm
         self.name = name
         self.project_id = project_id
         self.image_id = image_id
+        self.google_json = google_json
         
         

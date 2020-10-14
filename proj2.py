@@ -23,6 +23,7 @@ dotenv_path = join(
     )
 load_dotenv(dotenv_path)
 
+
 dotenv_path = join(
     dirname(__file__),
     "../keys/translate.env"
@@ -42,6 +43,7 @@ dbuser = os.getenv("USER")
 database_uri = os.getenv("DATABASE_URL")
 project_id = os.getenv("PROJECT_ID")
 image_id = os.getenv("IMAGE_ID")
+google_json = os.getenv("GOOGLE_JSON")
 
 engine = create_engine(
     database_uri,echo=False
@@ -90,11 +92,14 @@ def new_message(data):
     reply = chatBot.messageRead(message)
     dt = str(datetime.datetime.now())
     if(reply["type"]!= None):
-        
+        message = reply["data"]
+        if(reply["data"] == None):
+            message = "Bot experienced an error.\
+                Sorry for the inconvenience"
         emit(
             "Bot",
             {
-            "message":reply["data"],
+            "message":message,
             "sender":chatBot.name,
             "dt":dt,
             "msg_type":reply["type"]
@@ -166,7 +171,7 @@ def index():
     return flask.render_template("index.html")
     
 if __name__ == "__main__":
-    chatBot = Bot(project_id,image_id)
+    chatBot = Bot(project_id,image_id,google_json)
     db = sessionLocal()
     dup = db.query(
         models.Username
