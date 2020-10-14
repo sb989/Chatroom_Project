@@ -55,9 +55,6 @@ Base = declarative_base()
 
 app = flask.Flask(__name__)
 
-log = logging.getLogger("werkzeug")
-log.disabled = True
-app.logger.disabled = True
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(
     app, cors_allowed_origins = "*"
