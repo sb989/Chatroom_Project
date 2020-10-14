@@ -30,7 +30,7 @@ export function Send(params)
             'sender':params['username'],
             'datetime':dt,
             'msg_type':'text'
-        });
+            });
         
         var form = document.getElementById("form");
         form.reset();

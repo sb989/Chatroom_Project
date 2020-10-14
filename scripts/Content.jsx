@@ -20,8 +20,18 @@ export function Content() {
             return ()=>{Socket.removeEventListener('room_count');}
         });
     }
-    receiveCount();
     
+    function disconnect()
+    {
+        React.useEffect(()=>{
+            Socket.on('disconnect',()=>{
+                alert("You are not connected to the server. Messages might send when you reconnect.");    
+            })
+            return ()=>{Socket.removeEventListener('disconnect');}
+        });
+    }
+    receiveCount();
+    disconnect();
     return (
     <div>
         <h2 className="roomCount">Room Count: {roomCount}</h2>
