@@ -107,22 +107,24 @@ def translateFromSourceToTarget(client,parent,sourceLang,targetLang,message):
 
         
 def translateToRandomLang(client, parent,message):
-    supported_langs = getSupportedLanguages(client, parent)
-    if(supported_langs!=None):
-        num_supported_langs = len(supported_langs.languages)
-        target_lang = supported_langs.languages[
-            random.randint(
-            0,num_supported_langs-1)
-            ]
-        target_lang = target_lang.language_code
-        source_lang = getMessageLanguage(client,parent,message)
-        if(source_lang!=None):
-            translated_mess = translateFromSourceToTarget(
-                client,parent,
-                source_lang,
-                target_lang,message)
-            if(translated_mess!=None):
-                return translated_mess
-    
-    return None
-
+    try:
+        supported_langs = getSupportedLanguages(client, parent)
+        if(supported_langs!=None):
+            num_supported_langs = len(supported_langs.languages)
+            target_lang = supported_langs.languages[
+                random.randint(
+                0,num_supported_langs-1)
+                ]
+            target_lang = target_lang.language_code
+            source_lang = getMessageLanguage(client,parent,message)
+            if(source_lang!=None):
+                translated_mess = translateFromSourceToTarget(
+                    client,parent,
+                    source_lang,
+                    target_lang,message)
+                if(translated_mess!=None):
+                    return translated_mess
+        
+        return None
+    except:
+        return None
