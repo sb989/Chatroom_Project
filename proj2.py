@@ -96,6 +96,7 @@ def new_message(data):
         if(reply["data"] == None):
             message = "Bot experienced an error.\
                 Sorry for the inconvenience"
+            reply["type"] = "text"
         emit(
             "Bot",
             {

@@ -76,6 +76,7 @@ class Bot:
             query = query.replace(' ','+')
             url = 'https://pixabay.com/api/?key={}&q={}&image_type=photo'\
                 .format(self.image_id,query)
+            print(url)
             response = requests.get(url)
             print(response)
             response = response.json()
