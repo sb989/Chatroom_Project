@@ -1,5 +1,5 @@
 import random
-import flask_sqlalchemy
+import sqlalchemy
 
 import models 
 
