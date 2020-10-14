@@ -42,7 +42,6 @@ log.disabled = True
 app.logger.disabled = True
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
-chatBot = Bot(project_id,image_id)
 
 @socketio.on('new message')
 def new_message(data):
@@ -66,14 +65,24 @@ def new_message(data):
         },broadcast=True)
     
     reply = chatBot.messageRead(message)
+    dt = str(datetime.datetime.now())
     if(reply['type']!= None):
         emit('Bot',{
         'message':reply['data'],
         'sender':chatBot.name,
-        'dt':str(datetime.datetime.now()),
+        'dt':dt,
         'msg_type':reply['type']
         },broadcast=True)
     
+        sender = chatBot.name
+        message = reply['data']
+        msg_type = reply['type']
+        
+        msg = models.Message(dt,sender,message,msg_type)
+        db = SessionLocal()
+        db.add(msg)
+        db.commit()
+        db.close()
         
 @socketio.on('connect')
 def on_connect():
@@ -116,6 +125,14 @@ def index():
     return flask.render_template("index.html")
     
 if __name__ == '__main__':
+    chatBot = Bot(project_id,image_id)
+    db = SessionLocal()
+    dup = db.query(models.Username).filter(models.Username.username == chatBot.name).first()
+    if dup == None:
+        user = models.Username(chatBot.name)
+        db.add(user)
+        db.commit()
+        db.close()
     socketio.run(app,
         host=os.getenv('IP', '0.0.0.0'),
         port=int(os.getenv('PORT', 8080)),

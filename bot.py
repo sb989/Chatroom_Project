@@ -67,7 +67,7 @@ class Bot:
         if(mList[0]!='!!'):
             ret['type']=None
             ret['data']=None
-        if(mList[1] == self.commands[0]):
+        elif(mList[1] == self.commands[0]):
             ret['type']='text'
             ret['data']=self.aboutMessage()
         elif(mList[1] == self.commands[1]):
