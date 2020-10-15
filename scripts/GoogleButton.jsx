@@ -11,20 +11,20 @@ export function GoogleButton(params) {
     function success(response) {
         let name = response["profileObj"]["name"];
         let email = response["profileObj"]["email"];
-        let pic = response["profileObj"]["imageUrl"];
+        let img = response["profileObj"]["imageUrl"];
         console.log(name);
         console.log(email);
         console.log(response);
         Socket.emit('login', {
             'name': name,
             'email':email,
-            'pic':pic
+            'img':img
         });
         
         console.log('Sent the name ' + name + ' to server!');
         params["setAuthenticated"](true);
         params["setName"](name);
-        params["setPic"](pic);
+        params["setImg"](img);
         params["setEmail"](email);
     }
     

@@ -79,6 +79,7 @@ def new_message(data):
     dt = data["datetime"]
     message = data["message"]
     msg_type = data["msg_type"]
+    img = data["img"]
     dt = datetime.datetime.strptime(
         dt, "%Y-%m-%d %H:%M:%S.%f"
         )
@@ -97,10 +98,15 @@ def new_message(data):
         "dt":str(dt),
         "sender":name,
         "email":email,
-        "msg_type":msg_type
+        "msg_type":msg_type,
+        "img":img
         },broadcast=True
         )
     
+    chatBotResponse(message)
+        
+
+def chatBotResponse(message):
     reply = chatBot.messageRead(message)
     dt = str(datetime.datetime.now())
     if(reply["type"]!= None):
@@ -133,7 +139,6 @@ def new_message(data):
         db.add(msg)
         db.commit()
         db.close()
-        
 
 def on_connect():
     print("Someone connected!")
@@ -150,14 +155,25 @@ def on_connect():
     message = {"messages":[]}
     users = {}
     for usr in usrs:
-        users[usr.email]=usr.name
-    for msg in msgs:
+        users[usr.email] = {
+            "name":usr.name,
+            "img":usr.pic
+            }
+    size = len(msgs)
+    for i in range(size):
+        same_or_diff_sender = "diff_sender"
+        msg = msgs[i]
+        if(i>0 and msg.email == msgs[i-1].email):
+            same_or_diff_sender = "same_sender"
         message["messages"].append(
             {"m":msg.message,
-            "sender":users[msg.email],
+            "sender":users[msg.email]["name"],
             "email":msg.email,
             "dt":str(msg.date_time),
-            "msg_type":msg.msg_type}
+            "msg_type":msg.msg_type,
+            "img":users[msg.email]["img"],
+            "same_or_diff_sender":same_or_diff_sender
+            }
             )
    
     emit(

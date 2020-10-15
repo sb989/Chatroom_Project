@@ -11,10 +11,8 @@ export function Content() {
     const[roomCount,setRoomCount] = React.useState(0);
     const[authenticated,setAuthenticated] = React.useState(false);
     const[loginMessage,setLoginMessage] = React.useState('');
-    const[pic,setPic] = React.useState('');
-    var element = document.getElementById(0);
-    if(element)
-        element.scrollIntoView(false);
+    const[img,setImg] = React.useState('');
+    
         
     function receiveCount()
     {
@@ -49,7 +47,7 @@ export function Content() {
             <h2 className="roomCount">Room Count: {roomCount}</h2>
             <MessageBox 
             name = {name} setName = {setName} 
-            messages = {messages} pic = {pic}
+            messages = {messages} img = {img}
             setMessages = {setMessages}
             email = {email}
             />
@@ -68,7 +66,7 @@ export function Content() {
             setAuthenticated = {setAuthenticated} 
             setLoginMessage = {setLoginMessage}
             setName = {setName}
-            setPic = {setPic}
+            setImg = {setImg}
             setEmail = {setEmail}
             />
         </div>

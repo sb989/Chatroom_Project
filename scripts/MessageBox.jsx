@@ -2,20 +2,25 @@ import * as React from 'react';
 import { Socket } from './Socket';
 import { Send } from './Send';
 
-export function MessageBox(params){
+export function MessageBox(params)
+{
     var name = params['name'];
     var messages = params['messages'];
     var setMessages = params['setMessages'];
     var email = params['email'];
     
-    function firstConnect(){
-        React.useEffect(()=>{
-            Socket.on('connected',(data)=>{
+    function firstConnect()
+    {
+        React.useEffect(()=>
+        {
+            Socket.on('connected',(data)=>
+            {
                 console.log("connected");
                 var messages = data['msgs']['messages'];
                 var size = messages.length;
                 var i;
-                var message,text,sender,dt,msg_type,sender_email;
+                var message,text,sender,dt,msg_type;
+                var sender_email,img,same_or_diff_sender;
                 setMessages([]);
                 for(i=0;i<size;i++)
                 {
@@ -25,30 +30,52 @@ export function MessageBox(params){
                     sender = message['sender'];
                     sender_email = message['email'];
                     dt = message['dt'];
-                    addMessage(text,dt,sender,msg_type,sender_email);
+                    img = message['img'];
+                    same_or_diff_sender = message["same_or_diff_sender"];
+                    addMessage(text,dt,sender,msg_type,sender_email,img,same_or_diff_sender);
                 }
             });
+            var element = document.getElementById(0);
+            if(element)
+                element.scrollIntoView(false);
+            
+            
         },[]);
     }
     
-    function addMessage(text,dt,sender,msg_type,email)
+    function addMessage(text,dt,sender,msg_type,email,img,same_or_diff_sender)
     {
-        var message ={'dt':dt,'sender':sender,'text':text,'msg_type':msg_type,'email':email};
+        
+        if(same_or_diff_sender === '' && messages.length >0 && messages[messages.length-1]['email'] === email)
+        {
+            same_or_diff_sender = "same_sender";
+        }
+        else if (same_or_diff_sender === '')
+        {
+            same_or_diff_sender = "diff_sender";
+        }
+        var message ={'dt':dt,'sender':sender,
+            'text':text,'msg_type':msg_type,
+            'email':email,'img':img,
+            "same_or_diff_sender":same_or_diff_sender};
         setMessages(m=>m.concat(message));
     }
     
-    function messageFormat(){
+    function messageFormat()
+    {
         var copy = [...messages];
         return copy.reverse().map((m,index)=>divClass(m,index));
     }
     
     function divClass(m,index)
     {
+        var dClass;
         var cBox = "receivedBox"
         var cMessage = "receivedMessage"
         var cName = "receivedMessageName"
         var cText = "receivedMessageText"
-        var dClass;
+        var contents = m['text']
+        var sender = m['sender'];
         if(m['email']===email)
         {
             cBox = "sentBox"
@@ -56,30 +83,49 @@ export function MessageBox(params){
             cName = "sentMessageName"
             cText = "sentMessageText"
         }
-        if(m['msg_type']==='text')
+        if(m['msg_type']==='img')
         {
-            dClass = <div className={cBox} id={index} key={index}><div className={cMessage} key={index}> <div className={cName}>{m['sender']}</div><div className={cText}>{m['text']}</div></div></div>;
+            contents = <img src = {m['text']}></img>
         }
-        else if(m['msg_type']==='img')
+        if(m['same_or_diff_sender'] === 'same_sender')
         {
-            dClass = <div className={cBox} id={index} key={index}><div className={cMessage} key={index}> <div className={cName}>{m['sender']}</div><div className={cText}><img src={m['text']}></img></div></div></div>;
+            sender = '';
         }
+        
+        dClass = <div className={m["same_or_diff_sender"]}>
+            <div className={cBox} id={index} key={index}>
+                <div className={cMessage} key={index}>
+                    <div className={cName}>
+                        {sender}
+                    </div>
+                    <div className={cText}>
+                        {contents}
+                    </div>
+                </div>
+            </div>
+        </div>;
+        
+        
             
        return dClass;
        
     }
     
-    function receiveMessage(){
-        React.useEffect(()=>{
-            Socket.on('new message',(data)=>{
+    function receiveMessage()
+    {
+        React.useEffect(()=>
+        {
+            Socket.on('new message',(data)=>
+            {
                 if(name===null)    
                     return;
                 if(data['email'] === email)
                     return;
-                addMessage(data['message'],data['dt'],data['sender'],data['msg_type'],data['email']);
+                addMessage(data['message'],data['dt'],data['sender'],data['msg_type'],data['email'],data['img'],'');
                 
             });
-            return ()=>{
+            return ()=>
+            {
                 Socket.removeEventListener('new message');
             }
         });
@@ -87,13 +133,16 @@ export function MessageBox(params){
     
     function receiveBotMessage()
     {
-        React.useEffect(()=>{
-            Socket.on('Bot',(data)=>{
+        React.useEffect(()=>
+        {
+            Socket.on('Bot',(data)=>
+            {
                 console.log(data);
                 addMessage(data['message'],data['dt'],data['sender'],data['msg_type']);
             });
         
-            return ()=>{
+            return ()=>
+            {
                 Socket.removeEventListener('Bot');
             }
         });
@@ -109,8 +158,10 @@ export function MessageBox(params){
             <div className ="messages">
                 {messageFormat()}
             </div>
-            <Send name={params['name']} addMessage={addMessage}
-            email={params['email']}            
+            <Send name={params['name']} 
+            addMessage={addMessage}
+            email={params['email']}
+            img = {params['img']}    
             />
         </div>
         )

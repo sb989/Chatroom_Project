@@ -30,13 +30,14 @@ export function Send(params)
             'email':params['email'],
             'name':params['name'],
             'datetime':dt,
-            'msg_type':'text'
+            'msg_type':'text',
+            'img':params['img']
             });
         
         var form = document.getElementById("form");
         form.reset();
         console.log(params['name']);
-        params['addMessage'](input,dt,params['name'],'text',params['email']);
+        params['addMessage'](input,dt,params['name'],'text',params['email'],params['img'],'');
         runAgain = false;
     }
     
