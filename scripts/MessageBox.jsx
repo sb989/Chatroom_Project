@@ -6,6 +6,7 @@ export function MessageBox(params){
     var name = params['name'];
     var messages = params['messages'];
     var setMessages = params['setMessages'];
+    var email = params['email'];
     
     function firstConnect(){
         React.useEffect(()=>{
@@ -14,7 +15,7 @@ export function MessageBox(params){
                 var messages = data['msgs']['messages'];
                 var size = messages.length;
                 var i;
-                var message,text,sender,dt,msg_type;
+                var message,text,sender,dt,msg_type,sender_email;
                 setMessages([]);
                 for(i=0;i<size;i++)
                 {
@@ -22,18 +23,18 @@ export function MessageBox(params){
                     msg_type = message['msg_type']
                     text = message['m'];
                     sender = message['sender'];
+                    sender_email = message['email'];
                     dt = message['dt'];
-                    addMessage(text,dt,sender,msg_type);
+                    addMessage(text,dt,sender,msg_type,sender_email);
                 }
             });
         },[]);
     }
     
-    function addMessage(text,dt,sender,msg_type)
+    function addMessage(text,dt,sender,msg_type,email)
     {
-        var message ={'dt':dt,'sender':sender,'text':text,'msg_type':msg_type};
+        var message ={'dt':dt,'sender':sender,'text':text,'msg_type':msg_type,'email':email};
         setMessages(m=>m.concat(message));
-       
     }
     
     function messageFormat(){
@@ -48,7 +49,7 @@ export function MessageBox(params){
         var cName = "receivedMessageName"
         var cText = "receivedMessageText"
         var dClass;
-        if(m['sender']===name)
+        if(m['email']===email)
         {
             cBox = "sentBox"
             cMessage = "sentMessage"
@@ -73,9 +74,9 @@ export function MessageBox(params){
             Socket.on('new message',(data)=>{
                 if(name===null)    
                     return;
-                if(data['sender'] === name)
+                if(data['email'] === email)
                     return;
-                addMessage(data['message'],data['dt'],data['sender'],data['msg_type']);
+                addMessage(data['message'],data['dt'],data['sender'],data['msg_type'],data['email']);
                 
             });
             return ()=>{
@@ -108,7 +109,9 @@ export function MessageBox(params){
             <div className ="messages">
                 {messageFormat()}
             </div>
-            <Send name={params['name']} addMessage={addMessage}/>
+            <Send name={params['name']} addMessage={addMessage}
+            email={params['email']}            
+            />
         </div>
         )
 }

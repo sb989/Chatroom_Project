@@ -25,6 +25,7 @@ export function GoogleButton(params) {
         params["setAuthenticated"](true);
         params["setName"](name);
         params["setPic"](pic);
+        params["setEmail"](email);
     }
     
     function failure(response){

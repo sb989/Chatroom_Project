@@ -74,15 +74,17 @@ def login(user):
 @socketio.on("new message")
 def new_message(data):
     print("New Message!")
-    sender = data["sender"]
+    email = data["email"]
+    name = data["name"]
     dt = data["datetime"]
     message = data["message"]
     msg_type = data["msg_type"]
     dt = datetime.datetime.strptime(
         dt, "%Y-%m-%d %H:%M:%S.%f"
         )
+    
     msg = models.Message(
-        dt,sender,message,msg_type
+        dt,email,message,msg_type
         )
     db = sessionLocal()
     db.add(msg)
@@ -93,7 +95,8 @@ def new_message(data):
         "new message",{
         "message":message,
         "dt":str(dt),
-        "sender":sender,
+        "sender":name,
+        "email":email,
         "msg_type":msg_type
         },broadcast=True
         )
@@ -111,6 +114,7 @@ def new_message(data):
             {
             "message":message,
             "sender":chatBot.name,
+            "email":chatBot.name,
             "dt":dt,
             "msg_type":reply["type"]
             },
@@ -140,15 +144,22 @@ def on_connect():
     msgs = db.query(
         models.Message
         ).all()
-
+    usrs = db.query(
+        models.Username
+        ).all()
     message = {"messages":[]}
+    users = {}
+    for usr in usrs:
+        users[usr.email]=usr.name
     for msg in msgs:
         message["messages"].append(
             {"m":msg.message,
-            "sender":msg.name,
+            "sender":users[msg.email],
+            "email":msg.email,
             "dt":str(msg.date_time),
             "msg_type":msg.msg_type}
             )
+   
     emit(
         "connected", 
         {"test": "Connected",
@@ -182,7 +193,7 @@ def index():
 if __name__ == "__main__":
     chatBot = Bot(project_id,image_id,google_json)
     db = sessionLocal()
-    if(checkIfUserExists(sessionLocal,chatBot.name)):
+    if(not checkIfUserExists(sessionLocal,chatBot.name)):
         createNewUserEntry(sessionLocal,chatBot.name,chatBot.name,'')
     socketio.run(app,
         host = os.getenv("IP", "0.0.0.0"),

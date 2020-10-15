@@ -27,7 +27,8 @@ export function Send(params)
             return;
         Socket.emit('new message',{
             'message':input,
-            'sender':params['name'],
+            'email':params['email'],
+            'name':params['name'],
             'datetime':dt,
             'msg_type':'text'
             });
@@ -35,7 +36,7 @@ export function Send(params)
         var form = document.getElementById("form");
         form.reset();
         console.log(params['name']);
-        params['addMessage'](input,dt,params['name'],'text');
+        params['addMessage'](input,dt,params['name'],'text',params['email']);
         runAgain = false;
     }
     

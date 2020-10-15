@@ -7,6 +7,7 @@ export function Content() {
     
     const[messages,setMessages] = React.useState([]);
     const[name,setName] = React.useState(null);
+    const[email,setEmail] = React.useState('');
     const[roomCount,setRoomCount] = React.useState(0);
     const[authenticated,setAuthenticated] = React.useState(false);
     const[loginMessage,setLoginMessage] = React.useState('');
@@ -50,6 +51,7 @@ export function Content() {
             name = {name} setName = {setName} 
             messages = {messages} pic = {pic}
             setMessages = {setMessages}
+            email = {email}
             />
         </div>
         
@@ -67,6 +69,7 @@ export function Content() {
             setLoginMessage = {setLoginMessage}
             setName = {setName}
             setPic = {setPic}
+            setEmail = {setEmail}
             />
         </div>
             )
