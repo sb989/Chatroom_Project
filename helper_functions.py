@@ -40,29 +40,56 @@ nouns = [
     'monkey'
     ]
 
-def generateUsername(sessionLocal):
-    db = sessionLocal()
-    username = (adjectives[random.randint(0,19)] 
-                + '_'
-                +nouns[random.randint(0,9)])
+# def generateUsername(sessionLocal):
+#     db = sessionLocal()
+#     username = (adjectives[random.randint(0,19)] 
+#                 + '_'
+#                 +nouns[random.randint(0,9)])
 
+#     try:
+#         dup = db.query(
+#             models.Username).filter(
+#             models.Username.username == username
+#             ).first(
+#             )
+#         if dup == None:
+#             user = models.Username(email,name,pic)
+#             db.add(user)
+#             db.commit()
+#             db.close()
+#         return username
+#     except Exception as e:
+#         print('error',e)
+#         db.close()
+#         return ''
+        
+def checkIfUserExists(sessionLocal,email):
+    db = sessionLocal()
     try:
         dup = db.query(
             models.Username).filter(
-            models.Username.username == username
+            models.Username.email == email
             ).first(
             )
-        if dup == None:
-            user = models.Username(username)
-            db.add(user)
-            db.commit()
-            db.close()
-        return username
-    except Exception as e:
-        print('error',e)
         db.close()
-        return ''
-        
+        if dup == None:
+            return False
+        else:
+            return True
+    except Exception as e:
+        print("checkIfUserExists error",e)
+        return False
+
+def createNewUserEntry(sessionLocal,email,name,pic):
+    db = sessionLocal()
+    user = models.Username(email,name,pic)
+    db.add(user)
+    db.commit()
+    db.close()
+
+
+
+
 def getSupportedLanguages(client, parent):
     try:
         supported_langs = client.get_supported_languages(parent=parent)

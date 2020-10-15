@@ -1,12 +1,16 @@
 import * as React from 'react';
 import { Socket } from './Socket';
 import { Send } from './Send';
-import {MessageBox} from './MessageBox'
+import {MessageBox} from './MessageBox';
+import {GoogleButton} from './GoogleButton';
 export function Content() {
-    const[messages,setMessages] = React.useState([]);
-    const[username,setUsername]= React.useState(null);
-    const[roomCount,setRoomCount]=React.useState(0);
     
+    const[messages,setMessages] = React.useState([]);
+    const[name,setName] = React.useState(null);
+    const[roomCount,setRoomCount] = React.useState(0);
+    const[authenticated,setAuthenticated] = React.useState(false);
+    const[loginMessage,setLoginMessage] = React.useState('');
+    const[pic,setPic] = React.useState('');
     var element = document.getElementById(0);
     if(element)
         element.scrollIntoView(false);
@@ -23,6 +27,7 @@ export function Content() {
     
     function disconnect()
     {
+        
         React.useEffect(()=>{
             Socket.on('disconnect',()=>{
                 alert("You are not connected to the server. Messages might send when you reconnect.");    
@@ -30,15 +35,41 @@ export function Content() {
             return ()=>{Socket.removeEventListener('disconnect');}
         });
     }
+    
+    
+    
     receiveCount();
     disconnect();
-    return (
-    <div>
-        <h2 className="roomCount">Room Count: {roomCount}</h2>
-        <MessageBox username={username} setUsername={setUsername} messages={messages} setMessages={setMessages}/>
-    </div>
     
-    );
-    
+    if(authenticated)
+    {
+        return(
+        <div>
+            <h2 className="roomCount">Room Count: {roomCount}</h2>
+            <MessageBox 
+            name = {name} setName = {setName} 
+            messages = {messages} pic = {pic}
+            setMessages = {setMessages}
+            />
+        </div>
+        
+        );
+    }
+        
+    else
+    {
+        return(
+        <div>
+            <h1>Login</h1>
+            {loginMessage}<br/>
+            <GoogleButton 
+            setAuthenticated = {setAuthenticated} 
+            setLoginMessage = {setLoginMessage}
+            setName = {setName}
+            setPic = {setPic}
+            />
+        </div>
+            )
+    }
     
 }

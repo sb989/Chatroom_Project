@@ -3,8 +3,7 @@ import { Socket } from './Socket';
 import { Send } from './Send';
 
 export function MessageBox(params){
-    var username = params['username'];
-    var setUsername = params['setUsername'];
+    var name = params['name'];
     var messages = params['messages'];
     var setMessages = params['setMessages'];
     
@@ -12,7 +11,6 @@ export function MessageBox(params){
         React.useEffect(()=>{
             Socket.on('connected',(data)=>{
                 console.log("connected");
-                setUsername(data['username']);
                 var messages = data['msgs']['messages'];
                 var size = messages.length;
                 var i;
@@ -27,7 +25,6 @@ export function MessageBox(params){
                     dt = message['dt'];
                     addMessage(text,dt,sender,msg_type);
                 }
-                console.log(data['username']);
             });
         },[]);
     }
@@ -51,7 +48,7 @@ export function MessageBox(params){
         var cName = "receivedMessageName"
         var cText = "receivedMessageText"
         var dClass;
-        if(m['sender']===username)
+        if(m['sender']===name)
         {
             cBox = "sentBox"
             cMessage = "sentMessage"
@@ -74,9 +71,9 @@ export function MessageBox(params){
     function receiveMessage(){
         React.useEffect(()=>{
             Socket.on('new message',(data)=>{
-                if(username===null)    
+                if(name===null)    
                     return;
-                if(data['sender'] === username)
+                if(data['sender'] === name)
                     return;
                 addMessage(data['message'],data['dt'],data['sender'],data['msg_type']);
                 
@@ -111,7 +108,7 @@ export function MessageBox(params){
             <div className ="messages">
                 {messageFormat()}
             </div>
-            <Send username={params['username']} addMessage={addMessage}/>
+            <Send name={params['name']} addMessage={addMessage}/>
         </div>
         )
 }

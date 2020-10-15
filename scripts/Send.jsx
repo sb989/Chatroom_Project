@@ -16,26 +16,26 @@ export function Send(params)
     function submit(e)
     {
         e.preventDefault();
-        if(params['username']===null)
+        if(params['name']===null)
         {
             runAgain=true;
             event = e;
             return;      
         }
         var dt = moment().format('YYYY-MM-DD HH:mm:ss.SSSSSS');
-        if(params['username']===null)
+        if(params['name']===null)
             return;
         Socket.emit('new message',{
             'message':input,
-            'sender':params['username'],
+            'sender':params['name'],
             'datetime':dt,
             'msg_type':'text'
             });
         
         var form = document.getElementById("form");
         form.reset();
-        console.log(params['username']);
-        params['addMessage'](input,dt,params['username'],'text');
+        console.log(params['name']);
+        params['addMessage'](input,dt,params['name'],'text');
         runAgain = false;
     }
     

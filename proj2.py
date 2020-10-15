@@ -14,7 +14,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import models
 
-from helper_functions import generateUsername
+from helper_functions import checkIfUserExists,createNewUserEntry
 from  bot import Bot
 
 dotenv_path = join(
@@ -61,6 +61,15 @@ socketio = flask_socketio.SocketIO(app)
 socketio.init_app(
     app, cors_allowed_origins = "*"
     )
+
+
+@socketio.on("login")
+def login(user):
+    if(not checkIfUserExists(sessionLocal,user["email"])):
+        createNewUserEntry(sessionLocal,user["email"],user["name"],user["pic"])
+    on_connect()
+
+
 
 @socketio.on("new message")
 def new_message(data):
@@ -121,7 +130,7 @@ def new_message(data):
         db.commit()
         db.close()
         
-@socketio.on("connect")
+
 def on_connect():
     print("Someone connected!")
     global connections
@@ -131,22 +140,20 @@ def on_connect():
     msgs = db.query(
         models.Message
         ).all()
-    username = generateUsername(sessionLocal)
-    print("username is ",username)
-    
+
     message = {"messages":[]}
     for msg in msgs:
         message["messages"].append(
             {"m":msg.message,
-            "sender":msg.username,
+            "sender":msg.name,
             "dt":str(msg.date_time),
             "msg_type":msg.msg_type}
             )
     emit(
         "connected", 
         {"test": "Connected",
-        "msgs":message,
-        "username":username}
+        "msgs":message
+        }
         )
     emit(
         "room_count",
@@ -170,21 +177,13 @@ def on_disconnect():
 @app.route("/")
 def index():
     return flask.render_template("index.html")
-    
+
+
 if __name__ == "__main__":
     chatBot = Bot(project_id,image_id,google_json)
     db = sessionLocal()
-    dup = db.query(
-        models.Username
-        ).filter(
-        models.Username.username == chatBot.name
-        ).first(
-        )
-    if dup == None:
-        user = models.Username(chatBot.name)
-        db.add(user)
-        db.commit()
-        db.close()
+    if(checkIfUserExists(sessionLocal,chatBot.name)):
+        createNewUserEntry(sessionLocal,chatBot.name,chatBot.name,'')
     socketio.run(app,
         host = os.getenv("IP", "0.0.0.0"),
         port = int(os.getenv("PORT", 8080)),
