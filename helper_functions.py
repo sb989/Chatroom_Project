@@ -4,65 +4,6 @@ import sqlalchemy
 import models 
 
 
-adjectives = [
-    'finicky',
-    'roomy',
-    'innocent',
-    'zonked',
-    'silent',
-    'sudden',
-    'nutritious',
-    'outstanding',
-    'rare',
-    'abashed',
-    'materialistic',
-    'nonstop',
-    'longing',
-    'lacking',
-    'waiting',
-    'puzzling',
-    'severe',
-    'selfish',
-    'misty',
-    'disagreeable'
-    ]
-    
-nouns = [
-    'hippo',
-    'bee',
-    'giraffe',
-    'toaster',
-    'cereal',
-    'car',
-    'bus',
-    'lemur',
-    'bird',
-    'monkey'
-    ]
-
-# def generateUsername(sessionLocal):
-#     db = sessionLocal()
-#     username = (adjectives[random.randint(0,19)] 
-#                 + '_'
-#                 +nouns[random.randint(0,9)])
-
-#     try:
-#         dup = db.query(
-#             models.Username).filter(
-#             models.Username.username == username
-#             ).first(
-#             )
-#         if dup == None:
-#             user = models.Username(email,name,pic)
-#             db.add(user)
-#             db.commit()
-#             db.close()
-#         return username
-#     except Exception as e:
-#         print('error',e)
-#         db.close()
-#         return ''
-        
 def checkIfUserExists(sessionLocal,email):
     db = sessionLocal()
     try:
@@ -86,8 +27,6 @@ def createNewUserEntry(sessionLocal,email,name,pic):
     db.add(user)
     db.commit()
     db.close()
-
-
 
 
 def getSupportedLanguages(client, parent):

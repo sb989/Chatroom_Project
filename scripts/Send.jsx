@@ -31,7 +31,8 @@ export function Send(params)
             'name':params['name'],
             'datetime':dt,
             'msg_type':'text',
-            'img':params['img']
+            'img':params['img'],
+            'index':params['messages'].length
             });
         
         var form = document.getElementById("form");

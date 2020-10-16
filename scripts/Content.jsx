@@ -44,6 +44,7 @@ export function Content() {
     {
         return(
         <div>
+                        <h1 className="Chat">CHAT</h1>
             <h2 className="roomCount">Room Count: {roomCount}</h2>
             <MessageBox 
             name = {name} setName = {setName} 

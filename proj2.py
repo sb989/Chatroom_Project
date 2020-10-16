@@ -8,6 +8,7 @@ import flask
 import flask_socketio
 from flask_socketio import emit
 import logging
+import urlvalidator
 
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
@@ -78,8 +79,10 @@ def new_message(data):
     name = data["name"]
     dt = data["datetime"]
     message = data["message"]
-    msg_type = data["msg_type"]
+    msg_type = determineMessageType(data["message"])
+    print(msg_type)
     img = data["img"]
+    index = data["index"]
     dt = datetime.datetime.strptime(
         dt, "%Y-%m-%d %H:%M:%S.%f"
         )
@@ -99,13 +102,28 @@ def new_message(data):
         "sender":name,
         "email":email,
         "msg_type":msg_type,
-        "img":img
+        "img":img,
+        "index":index
         },broadcast=True
         )
     
     chatBotResponse(message)
         
 
+def determineMessageType(message):
+    try:
+        urlvalidator.validate_url(message)
+        if(message.endswith('.png')
+            or message.endswith('.jpg') 
+            or message.endswith('.jpeg') 
+            or message.endswith('.gif')):
+            
+            return 'img'
+        else:
+            return 'link'
+    except urlvalidator.ValidationError:
+        return 'text'
+    
 def chatBotResponse(message):
     reply = chatBot.messageRead(message)
     dt = str(datetime.datetime.now())

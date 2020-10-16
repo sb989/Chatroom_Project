@@ -70,11 +70,11 @@ export function MessageBox(params)
     function divClass(m,index)
     {
         var dClass;
-        var cBox = "receivedBox"
-        var cMessage = "receivedMessage"
-        var cName = "receivedMessageName"
-        var cText = "receivedMessageText"
-        var contents = m['text']
+        var cBox = "receivedBox";
+        var cMessage = "receivedMessage";
+        var cName = "receivedMessageName";
+        var cText = "receivedMessageText";
+        var contents = m['text'];
         var sender = m['sender'];
         var img = <img className = "messProfileImg" src = {m['img']}></img>;
         if(m['email']===email)
@@ -89,7 +89,10 @@ export function MessageBox(params)
         {
             contents = <img src = {m['text']}></img>
         }
-
+        else if(m['msg_type']==='link')
+        {
+            contents = <a href = {m['text']}>{m['text']}</a>
+        }
         if(m['same_or_diff_sender'] === 'same_sender')
         {
             sender = '';
@@ -124,8 +127,12 @@ export function MessageBox(params)
             {
                 if(name===null)    
                     return;
+                    
                 if(data['email'] === email)
+                {
+                    setMessages(m=>m[data['index']]['msg_type'] = data['msg_type']); 
                     return;
+                }
                 addMessage(data['message'],data['dt'],data['sender'],data['msg_type'],data['email'],data['img'],'');
                 
             });
@@ -159,11 +166,11 @@ export function MessageBox(params)
    receiveBotMessage();
     return(
         <div id ="messageBox">
-            <h1 className="Chat">CHAT</h1>
             <div className ="messages">
                 {messageFormat()}
             </div>
             <Send name={params['name']} 
+            messages={params['messages']}
             addMessage={addMessage}
             email={params['email']}
             img = {params['img']}    
