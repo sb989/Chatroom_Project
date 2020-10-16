@@ -76,24 +76,29 @@ export function MessageBox(params)
         var cText = "receivedMessageText"
         var contents = m['text']
         var sender = m['sender'];
+        var img = <img className = "messProfileImg" src = {m['img']}></img>;
         if(m['email']===email)
         {
             cBox = "sentBox"
             cMessage = "sentMessage"
             cName = "sentMessageName"
             cText = "sentMessageText"
+            img = '';
         }
         if(m['msg_type']==='img')
         {
             contents = <img src = {m['text']}></img>
         }
+
         if(m['same_or_diff_sender'] === 'same_sender')
         {
             sender = '';
+            img = '';
         }
         
         dClass = <div className={m["same_or_diff_sender"]}>
             <div className={cBox} id={index} key={index}>
+                {img}
                 <div className={cMessage} key={index}>
                     <div className={cName}>
                         {sender}

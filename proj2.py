@@ -210,7 +210,7 @@ if __name__ == "__main__":
     chatBot = Bot(project_id,image_id,google_json)
     db = sessionLocal()
     if(not checkIfUserExists(sessionLocal,chatBot.name)):
-        createNewUserEntry(sessionLocal,chatBot.name,chatBot.name,'')
+        createNewUserEntry(sessionLocal,chatBot.name,chatBot.name,'static/Robot.png')
     socketio.run(app,
         host = os.getenv("IP", "0.0.0.0"),
         port = int(os.getenv("PORT", 8080)),

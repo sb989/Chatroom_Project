@@ -49,7 +49,7 @@ export function Send(params)
         <div className = "send">
             <form id="form" className="form" onSubmit={submit}>
             
-                <input className = "sendInput" type ='text'onInput={newInp}/>
+                <textarea className = "sendInput" type ='text'onInput={newInp} ></textarea>
                 <button className = "sendButton">Send</button>
             </form>
         </div>

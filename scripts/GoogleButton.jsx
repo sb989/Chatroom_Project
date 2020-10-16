@@ -11,7 +11,15 @@ export function GoogleButton(params) {
     function success(response) {
         let name = response["profileObj"]["name"];
         let email = response["profileObj"]["email"];
-        let img = response["profileObj"]["imageUrl"];
+        let img;
+        if("imageUrl" in response["profileObj"])
+        {
+            img = response["profileObj"]["imageUrl"];
+        }
+        else
+        {
+            img = "static/profile_pic.png";
+        }
         console.log(name);
         console.log(email);
         console.log(response);

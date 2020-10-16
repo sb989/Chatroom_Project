@@ -28,16 +28,17 @@ body{
 
 .same_sender{
     margin-top:.25vw;
+    margin-left:2.75vw;
 }
 
 .diff_sender{
-    margin-top:.5vw;
+    margin-top:.75vw;
 }
 
 .receivedBox{
     display:flex;
     justify-content:flex-start;
-    /*max-width:80%;*/
+    max-width:100%;
 }
 
 .sentBox{
@@ -59,13 +60,21 @@ body{
     background-color:#102E4A;
     border-color: #102E4A;
     max-width:80%;
+    overflow-wrap:break-word;
 
+}
+
+.messProfileImg{
+    border-radius:50%;
+    height:2vw;
+    margin-right:.25vw;
+    margin-left:.5vw;
 }
 
 .receivedMessage{
     /*margin-top:1vw;*/
     /*margin-bottom:1vw;*/
-    margin-left:1vw;
+    /*margin-left:.5vw;*/
     border-style:solid;
     border-radius:.5vw;
     display:inline-block;
@@ -109,18 +118,20 @@ body{
 .form{
     height:4vw;
     display:flex;
-    justify-content:center;
+    justify-content:flex-end;
 }
 
 .sendInput{
+    font-family : Helvetica;
     background-color:#102E4A;
     color:#D7D6D6;
     border:solid .1vw #102E4A;
     border-radius:.5vw;
-    width:50%;
-    height:50%;
+    width:30%;
+    max-height:100%;
     margin-right:1vw;
     overflow-wrap:break-word;
+    overflow-y:scroll;
 }
 
 .sendButton{
