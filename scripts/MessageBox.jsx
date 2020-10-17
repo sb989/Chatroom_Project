@@ -132,7 +132,12 @@ export function MessageBox(params)
                 if(data['email'] === email)
                 {
                     if(data['index'] !=-1)
-                        setMessages(m=>m[data['index']]['msg_type'] = data['msg_type']); 
+                    {
+                        var copy = [...messages]
+                        copy[data['index']]['msg_type'] = data['msg_type'];
+                        setMessages(m=>copy); 
+                    }
+                        
                     return;
                 }
                 addMessage(data['msg'],data['dt'],data['name'],data['msg_type'],data['email'],data['img'],'');
