@@ -26,10 +26,10 @@ export function Send(params)
         if(params['name']===null)
             return;
         Socket.emit('new message',{
-            'message':input,
+            'msg':input,
             'email':params['email'],
             'name':params['name'],
-            'datetime':dt,
+            'dt':dt,
             'msg_type':'text',
             'img':params['img'],
             'index':params['messages'].length

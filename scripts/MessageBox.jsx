@@ -16,7 +16,8 @@ export function MessageBox(params)
             Socket.on('connected',(data)=>
             {
                 console.log("connected");
-                var messages = data['msgs']['messages'];
+                console.log(data);
+                var messages = data['messages'];
                 var size = messages.length;
                 var i;
                 var message,text,sender,dt,msg_type;
@@ -26,8 +27,8 @@ export function MessageBox(params)
                 {
                     message = messages[i];
                     msg_type = message['msg_type']
-                    text = message['m'];
-                    sender = message['sender'];
+                    text = message['msg'];
+                    sender = message['name'];
                     sender_email = message['email'];
                     dt = message['dt'];
                     img = message['img'];
@@ -46,7 +47,7 @@ export function MessageBox(params)
     function addMessage(text,dt,sender,msg_type,email,img,same_or_diff_sender)
     {
         
-        if(same_or_diff_sender === '' && messages.length >0 && messages[messages.length-1]['email'] === email)
+        if(same_or_diff_sender === '' && messages.length > 0 && messages[messages.length-1]['email'] === email)
         {
             same_or_diff_sender = "same_sender";
         }
@@ -87,7 +88,7 @@ export function MessageBox(params)
         }
         if(m['msg_type']==='img')
         {
-            contents = <img src = {m['text']}></img>
+            contents = <img className = "msgImg" src = {m['text']}></img>
         }
         else if(m['msg_type']==='link')
         {
@@ -99,7 +100,7 @@ export function MessageBox(params)
             img = '';
         }
         
-        dClass = <div className={m["same_or_diff_sender"]}>
+        dClass = <div key={index} className={m["same_or_diff_sender"]}>
             <div className={cBox} id={index} key={index}>
                 {img}
                 <div className={cMessage} key={index}>
@@ -130,10 +131,11 @@ export function MessageBox(params)
                     
                 if(data['email'] === email)
                 {
-                    setMessages(m=>m[data['index']]['msg_type'] = data['msg_type']); 
+                    if(data['index'] !=-1)
+                        setMessages(m=>m[data['index']]['msg_type'] = data['msg_type']); 
                     return;
                 }
-                addMessage(data['message'],data['dt'],data['sender'],data['msg_type'],data['email'],data['img'],'');
+                addMessage(data['msg'],data['dt'],data['name'],data['msg_type'],data['email'],data['img'],'');
                 
             });
             return ()=>
@@ -149,8 +151,7 @@ export function MessageBox(params)
         {
             Socket.on('Bot',(data)=>
             {
-                console.log(data);
-                addMessage(data['message'],data['dt'],data['sender'],data['msg_type']);
+                addMessage(data['msg'],data['dt'],data['name'],data['msg_type'],data['email'],data['img'],'');
             });
         
             return ()=>

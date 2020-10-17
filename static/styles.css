@@ -5,13 +5,21 @@ body{
 
 }
 
+.top{
+    width:100%;
+    display:flex;
+    position:relative;
+}
+
 .Chat{
     display:inline-block;
-    margin-left:1vw;
+    position:relative;
+    left:1vw;
 }
 .roomCount{
     display:inline-block;
-    margin-left:62vw;
+    position:absolute;
+    right:1vw;
 }
 
 
@@ -55,12 +63,9 @@ body{
 .sentBox{
     display:flex;
     justify-content:flex-end;
-    /*max-width:80%;*/
 }
 
 .sentMessage{
-    /*margin-top:1vw;*/
-    /*margin-bottom:1vw;*/
     margin-right:1vw;
     display:inline-block;
     border-style:solid;
@@ -83,9 +88,6 @@ body{
 }
 
 .receivedMessage{
-    /*margin-top:1vw;*/
-    /*margin-bottom:1vw;*/
-    /*margin-left:.5vw;*/
     border-style:solid;
     border-radius:.5vw;
     display:inline-block;
@@ -150,4 +152,9 @@ body{
     height:50%;
     width: 8%;
     font-size:1vw;
+}
+
+.msgImg{
+    width:100%;
+    height:auto;
 }

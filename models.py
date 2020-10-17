@@ -1,8 +1,8 @@
 from sqlalchemy import Column,Integer,String,DateTime,Text, ForeignKey
 from sqlalchemy.orm import relationship
-from proj2 import Base,engine
+from proj2 import sc
 
-class Username(Base):
+class Username(sc.Base):
     __tablename__ = "username"
     email         = Column(String(120),primary_key = True)
     messages      = relationship("Message")
@@ -18,7 +18,7 @@ class Username(Base):
         return '%s %s' %(self.email,self.name)
         
         
-class Message(Base):
+class Message(sc.Base):
     __tablename__ = "message"
     date_time     = Column(DateTime, primary_key = True)
     email          = Column(String(120),ForeignKey(
@@ -27,6 +27,7 @@ class Message(Base):
         )
     message = Column(Text)
     msg_type = Column(String(100))
+    
     def __init__(self,dt,email,msg,msg_type):
         self.date_time = dt
         self.email = email
@@ -41,4 +42,4 @@ class Message(Base):
 
 
         
-Base.metadata.create_all(bind = engine)
+sc.Base.metadata.create_all(bind = sc.engine)

@@ -19,6 +19,7 @@ export function Content() {
         React.useEffect(()=>{
             Socket.on('room_count',(data)=>{
                 setRoomCount(data['count']);
+                console.log('receiveCount');
             })
             return ()=>{Socket.removeEventListener('room_count');}
         });
@@ -44,8 +45,10 @@ export function Content() {
     {
         return(
         <div>
-                        <h1 className="Chat">CHAT</h1>
-            <h2 className="roomCount">Room Count: {roomCount}</h2>
+            <div className = "top">
+                <h1 className="Chat">CHAT</h1>
+                <h2 className="roomCount">Room Count: {roomCount}</h2>
+            </div>
             <MessageBox 
             name = {name} setName = {setName} 
             messages = {messages} img = {img}

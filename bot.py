@@ -6,7 +6,7 @@ import base64
 from google.cloud import translate
 from google.oauth2 import service_account
 from Equation import Expression
-from helper_functions import translateToRandomLang
+from bot_helper_functions import translateToRandomLang
 
 
 class Bot:
@@ -20,7 +20,7 @@ class Bot:
     project_id = ''
     image_id = ''
     google_json = ''
-    
+    img = ''
     def aboutMessage(self):
         about_str = 'I am {}. Use me to translate,\
             send pictures, and more!'.format(self.name)
@@ -123,11 +123,15 @@ class Bot:
             ret['data'] = self.unknownCommand(m_list[1])
         return ret
     
-    def __init__(self,project_id,image_id,google_json,stm = '!!',name = 'ChatBot'):
+    def __init__(
+        self,project_id,image_id,
+        google_json,img,
+        stm = '!!',name = 'ChatBot'
+        ):
         self.string_to_match = stm
         self.name = name
         self.project_id = project_id
         self.image_id = image_id
         self.google_json = google_json
-        
+        self.img = img
         
