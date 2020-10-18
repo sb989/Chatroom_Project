@@ -63,10 +63,11 @@ export function Content() {
     else
     {
         return(
-        <div>
-            <h1>Login</h1>
+        <div className = "loginBox">
+            <h1 className = "loginHeader">Login</h1>
             {loginMessage}<br/>
             <GoogleButton 
+            className = "googleButton"
             setAuthenticated = {setAuthenticated} 
             setLoginMessage = {setLoginMessage}
             setName = {setName}

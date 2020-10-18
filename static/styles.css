@@ -39,8 +39,8 @@ a:hover{
 .content{
     font-family:Helvetica;
     color:#D7D6D6;
-    width:80%;
-    margin-left:5vw;
+    padding-left:5vw;
+    padding-right:5vw;
 }
 
 .messages{
@@ -64,8 +64,6 @@ a:hover{
     margin-top:.25vw;
     margin-left:2vw;
     margin-right:2vw;
-
-    
 }
 
 .diff_sender{
@@ -178,4 +176,17 @@ a:hover{
     width:100%;
     height:auto;
     border-radius:1%
+}
+
+
+.loginBox{
+    border:solid;
+    border-color:#1F1F1F;
+    background-color:#1F1F1F;
+    border-radius:1%;
+    margin-left:35%;
+    width:30%;
+    height:40%;
+    margin-top:10%;
+    text-align:center;
 }
