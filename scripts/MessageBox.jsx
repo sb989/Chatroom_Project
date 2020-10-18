@@ -92,7 +92,11 @@ export function MessageBox(params)
         }
         else if(m['msg_type']==='link')
         {
-            contents = <a href = {m['text']}>{m['text']}</a>
+            console.log(m['text'])
+            var hr = m['text']
+            if(!hr.startsWith('http'))
+                hr = 'https://'+m['text']
+            contents = <a href = {hr}>{m['text']}</a>;
         }
         if(m['same_or_diff_sender'] === 'same_sender')
         {
