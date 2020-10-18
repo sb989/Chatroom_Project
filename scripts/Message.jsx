@@ -11,6 +11,7 @@ export function Message(params)
     var text = m['text'];
     var name = m['sender'];
     var email = params['email'];
+    console.log(email);
     if(m['email']===email)
     {
         cBox = "sentBox"

@@ -36,45 +36,45 @@ export function Content() {
     }
     
     
-    
     receiveCount();
     disconnect();
     
     if(authenticated)
     {
+        console.log("auth");
+        console.log(email);
         return(
-        <div>
-            <div className = "top">
-                <h1 className="Chat">CHAT</h1>
-                <h2 className="roomCount">Room Count: {roomCount}</h2>
-            </div>
-            <ChatBox 
-            name = {name} setName = {setName} 
-            messages = {messages} img = {img}
-            setMessages = {setMessages}
-            email = {email}
-            />
-        </div>
+                <div>
+                    <div className = "top">
+                        <h1 className="Chat">CHAT</h1>
+                        <h2 className="roomCount">Room Count: {roomCount}</h2>
+                    </div>
+                    <ChatBox 
+                    name = {name} setName = {setName} 
+                    messages = {messages} img = {img}
+                    setMessages = {setMessages}
+                    email = {email}
+                    />
+                </div>
+                
+                );    
         
-        );
     }
         
-    else
+    else if(! authenticated)
     {
-        return(
-        <div className = "loginBox">
-            <h1 className = "loginHeader">Login</h1>
-            {loginMessage}<br/>
-            <GoogleButton 
-            className = "googleButton"
-            setAuthenticated = {setAuthenticated} 
-            setLoginMessage = {setLoginMessage}
-            setName = {setName}
-            setImg = {setImg}
-            setEmail = {setEmail}
-            />
-        </div>
-            )
+        return (<div className = "loginBox">
+                <h1 className = "loginHeader">Login</h1>
+                {loginMessage}<br/>
+                <GoogleButton 
+                className = "googleButton"
+                setAuthenticated = {setAuthenticated} 
+                setLoginMessage = {setLoginMessage}
+                setName = {setName}
+                setImg = {setImg}
+                setEmail = {setEmail}
+                />
+            </div>);
     }
     
 }

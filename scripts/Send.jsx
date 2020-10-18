@@ -23,8 +23,7 @@ export function Send(params)
             return;      
         }
         var dt = moment().format('YYYY-MM-DD HH:mm:ss.SSSSSS');
-        if(params['name']===null)
-            return;
+
         Socket.emit('new message',{
             'msg':input,
             'email':params['email'],
