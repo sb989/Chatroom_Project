@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Socket } from './Socket';
-import { Send } from './Send';
-import {MessageBox} from './MessageBox';
+import {ChatBox} from './ChatBox';
 import {GoogleButton} from './GoogleButton';
 export function Content() {
     
@@ -49,7 +48,7 @@ export function Content() {
                 <h1 className="Chat">CHAT</h1>
                 <h2 className="roomCount">Room Count: {roomCount}</h2>
             </div>
-            <MessageBox 
+            <ChatBox 
             name = {name} setName = {setName} 
             messages = {messages} img = {img}
             setMessages = {setMessages}
