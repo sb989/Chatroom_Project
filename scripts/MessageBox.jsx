@@ -92,7 +92,6 @@ export function MessageBox(params)
         }
         else if(m['msg_type']==='link')
         {
-            console.log(m['text'])
             var hr = m['text']
             if(!hr.startsWith('http'))
                 hr = 'https://'+m['text']
