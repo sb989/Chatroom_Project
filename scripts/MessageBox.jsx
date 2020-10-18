@@ -77,14 +77,16 @@ export function MessageBox(params)
         var cText = "receivedMessageText";
         var contents = m['text'];
         var sender = m['sender'];
-        var img = <img className = "messProfileImg" src = {m['img']}></img>;
+        var img = <div className = "profileImgBox">
+                    <img className = "profileImg" src = {m['img']}></img>
+                </div>;
         if(m['email']===email)
         {
             cBox = "sentBox"
             cMessage = "sentMessage"
             cName = "sentMessageName"
             cText = "sentMessageText"
-            img = '';
+            // img = '';
         }
         if(m['msg_type']==='img')
         {
@@ -103,18 +105,30 @@ export function MessageBox(params)
             img = '';
         }
         
+        var htmlMessage = <div className={cMessage} key={index}>
+                            <div className={cName}>
+                                {sender}
+                            </div>
+                            <div className={cText}>
+                                {contents}
+                            </div>
+                        </div>
+        
+        var htmlBox = <div className={cBox} id={index} key={index}>
+                        {img}
+                        {htmlMessage}
+                    </div>
+                    
+        if(m['email']===email)
+        {
+            htmlBox = <div className={cBox} id={index} key={index}>
+                        {htmlMessage}
+                        {img}
+                    </div>
+        }
+        
         dClass = <div key={index} className={m["same_or_diff_sender"]}>
-            <div className={cBox} id={index} key={index}>
-                {img}
-                <div className={cMessage} key={index}>
-                    <div className={cName}>
-                        {sender}
-                    </div>
-                    <div className={cText}>
-                        {contents}
-                    </div>
-                </div>
-            </div>
+            {htmlBox}
         </div>;
         
         

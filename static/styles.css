@@ -1,9 +1,20 @@
 
 
 body{
-    background-color:#071521;
+    background-color:#0A0A0A;
 
 }
+
+
+a{
+    color:#20BF55;
+    text-decoration:none;
+}
+
+a:hover{
+    text-decoration: underline;
+}
+
 
 .top{
     width:100%;
@@ -20,6 +31,8 @@ body{
     display:inline-block;
     position:absolute;
     right:1vw;
+    font-weight:bold;
+    color:#0E79B2;
 }
 
 
@@ -36,18 +49,23 @@ body{
     overflow-x:hidden;
     height:30vw;
     border-style:solid;
-    border-color: #102E4A;
+    border-color: #1F1F1F;
     border-width:.1vw;
     border-radius:.5vw;
     display:flex;
     flex-direction:column-reverse;
     padding-top:1vw;
     padding-bottom:1vw;
+    padding-left:.5vw;
+    padding-right:.5vw;
 }
 
 .same_sender{
     margin-top:.25vw;
-    margin-left:2.75vw;
+    margin-left:2vw;
+    margin-right:2vw;
+
+    
 }
 
 .diff_sender{
@@ -73,18 +91,22 @@ body{
     border-width:.1vw;
     padding-left:1%;
     padding-right:1%;
-    background-color:#102E4A;
-    border-color: #102E4A;
+    background-color:#1F1F1F;
+    border-color: #1F1F1F;
     max-width:80%;
     overflow-wrap:break-word;
-
+    margin-right:.1vw;
+    text-align:right;
 }
 
-.messProfileImg{
+.profileImgBox{
+    height:2vw;
+    flex: 0 0 2vw;
+}
+
+.profileImg{
     border-radius:50%;
     height:2vw;
-    margin-right:.25vw;
-    margin-left:.5vw;
 }
 
 .receivedMessage{
@@ -94,16 +116,17 @@ body{
     border-width:.1vw;
     padding-left:1%;
     padding-right:1%;
-    background-color:#102E4A;
-    border-color: #102E4A;
+    background-color:#1F1F1F;
+    border-color: #1F1F1F;
     overflow-wrap:break-word;
     max-width:80%;
+    margin-left:.1vw;
 
 }
 
 .receivedMessageName{
     font-size: .8vw;
-    color:#CC3F0C;
+    color:#0E79B2;
     font-weight:bold;
     margin-bottom:.5vw;
     margin-top:.1vw;
@@ -113,7 +136,7 @@ body{
 .sentMessageName{
     text-align:right;
     font-size:.8vw;
-    color:#CC3F0C;
+    color:#0E79B2;
     font-weight:bold;
     margin-bottom:.5vw;
     margin-top:.1vw;
@@ -123,10 +146,7 @@ body{
     margin-top:1vw;
 }
 
-.roomCount{
-    font-weight:bold;
-    color:#CC3F0C;
-}
+
 
 
 .form{
@@ -137,15 +157,15 @@ body{
 
 .sendInput{
     font-family : Helvetica;
-    background-color:#102E4A;
+    background-color:#1F1F1F;
     color:#D7D6D6;
-    border:solid .1vw #102E4A;
+    border:solid .1vw #1F1F1F;
     border-radius:.5vw;
     width:30%;
     max-height:100%;
     margin-right:1vw;
     overflow-wrap:break-word;
-    overflow-y:scroll;
+    overflow-y:auto;
 }
 
 .sendButton{
@@ -157,4 +177,5 @@ body{
 .msgImg{
     width:100%;
     height:auto;
+    border-radius:1%
 }
