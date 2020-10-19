@@ -7,3 +7,4 @@ eventlet
 psycopg2
 requests
 Equation
+urlvalidator
