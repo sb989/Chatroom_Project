@@ -53,7 +53,7 @@ sc = ServerComms(database_uri,project_id,image_id,google_json,socketio)
 @socketio.on("login")
 def login(user):
     if(not checkIfUserExists(sc.sessionLocal,user["email"])):
-        createNewUserEntry(sc.sessionLocal,user["email"],user["name"],user["pic"])
+        createNewUserEntry(sc.sessionLocal,user["email"],user["name"],user["img"])
     sid = request.sid
     sc.onConnect(sid)
 

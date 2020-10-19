@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Message} from './Message'
+import {Message} from './Message';
 export function Messages(params)
 {
     var messages = params['messages'];
