@@ -41,8 +41,6 @@ export function Content() {
     
     if(authenticated)
     {
-        console.log("auth");
-        console.log(email);
         return(
                 <div>
                     <div className = "top">

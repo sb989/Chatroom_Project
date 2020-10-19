@@ -9,9 +9,9 @@ export function Message(params)
     var cName = "receivedMessageName";
     var cText = "receivedMessageText";
     var text = m['text'];
-    var name = m['sender'];
+    var name = m['name'];
     var email = params['email'];
-    console.log(email);
+    
     if(m['email']===email)
     {
         cBox = "sentBox"
@@ -19,7 +19,9 @@ export function Message(params)
         cName = "sentMessageName"
         cText = "sentMessageText"
     }
-    return (<div key = {index} className = {m["same_or_diff_sender"]}>
+    return (<div key = {index} 
+    className = {m["same_or_diff_sender"]}
+    index = {index}>
         <MessageBox
             m = {m}
             index = {index}
@@ -30,6 +32,7 @@ export function Message(params)
             text = {text}
             name = {name}
             email = {email}
+            key = {index}
         />
         </div>)
     

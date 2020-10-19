@@ -15,9 +15,7 @@ export function ChatBox(params)
         {
             Socket.on('connected',(data)=>
             {
-                console.log(email);
                 console.log("connected");
-                console.log(data);
                 var messages = data['messages'];
                 var size = messages.length;
                 var i;
@@ -57,7 +55,7 @@ export function ChatBox(params)
         {
             same_or_diff_sender = "diff_sender";
         }
-        var message ={'dt':dt,'name':name,
+        var message ={'dt':dt,'name':s_name,
             'text':text,'msg_type':msg_type,
             'email':s_email,'img':img,
             "same_or_diff_sender":same_or_diff_sender};
@@ -65,7 +63,6 @@ export function ChatBox(params)
     }
     function addMessage(text,dt,s_name,msg_type,s_email,img,same_or_diff_sender)
     {
-        console.log(email);
         var message = createMessage(text,dt,s_name,msg_type,s_email,img,same_or_diff_sender);
         setMessages(m=>m.concat(message));
     }
@@ -123,7 +120,7 @@ export function ChatBox(params)
     receiveMessage();
    receiveBotMessage();
     return(
-        <div id ="chatBox">
+        <div className = "chatBox" id ="chatBox">
            
             <Messages
                 messages = {params['messages']}

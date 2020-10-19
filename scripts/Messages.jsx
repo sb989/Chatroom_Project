@@ -7,13 +7,12 @@ export function Messages(params)
     
     function mess()
     {
-        console.log("messages function");
-        console.log("email"+params['email']);
         return copy.reverse().map((m,index)=>
             <Message
             m = {m}
             index = {index}
             email = {params['email']}
+            key = {index}
             />
             );
     }
