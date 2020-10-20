@@ -48,6 +48,7 @@ export function GoogleButton(params) {
         onSuccess={success}
         onFailure={failure}
         cookiePolicy={'single_host_origin'}
+        redirectUri
         />
     
 }
