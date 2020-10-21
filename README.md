@@ -36,6 +36,7 @@ Problems
 2.  When breaking the chatbox into different react components the check to see if the message was from the user stopped working.  
     As a result all messages appeared as if they were from others. After a few hours of looking through the code I finally realised  
     that I had mispelled the variable that I passed to the react component.
+
 Improvements
 1.  I would implement multiple ways to login as well as the traditional login function using email and passsword. Other websites like facebook
     have a react component like google making implementing their login easy. For the traditional login function I would send the email and password to the server  
