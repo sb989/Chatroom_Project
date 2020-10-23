@@ -22,8 +22,8 @@ class Bot:
     google_json = ''
     img = ''
     def aboutMessage(self):
-        about_str = 'I am {}. Use me to translate,\
-            send pictures, and more!'.format(self.name)
+        about_str = "I am {}. Use me to translate,"\
+        "send pictures, and more!".format(self.name)
         return about_str
     
     def commandList(self):
@@ -32,8 +32,8 @@ class Bot:
             'Sends a list of commands and what they do.',
             'Translates the message that follows into a random language.',
             'Returns a picture of the message that follows.',
-            'Calculates simple math equations. Supported symbols \
-                are +, -, /, *, (, and ).'
+            'Calculates simple math equations. Supported symbols'\
+                ' are +, -, /, *, (, and ).'
                 ]
         return_str = ''
         
@@ -85,8 +85,8 @@ class Bot:
         return result()
     
     def unknownCommand(self,command):
-        message = "Sorry. I don't recognize the command: "+ command+".\
-            To get a list of commands enter !! help."
+        message = "Sorry. I don't recognize the command: {}."\
+        "To get a list of commands enter !! help.".format(command)
         return message
         
     def messageRead(self,message):
