@@ -80,10 +80,12 @@ class Bot:
     
     def math(self,equation):
         result = Expression(equation[0])
-        if(result() == None):
+        try:
+            result()
+            return result()
+        except Exception as e:
             return "Invalid Expression"
-        return result()
-    
+
     def unknownCommand(self,command):
         message = "Sorry. I don't recognize the command: {}."\
         "To get a list of commands enter !! help.".format(command)

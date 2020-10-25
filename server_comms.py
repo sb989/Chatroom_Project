@@ -3,9 +3,7 @@ import datetime
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from helper_functions import determineMessageType,\
-    checkIfUserExists,createNewUserEntry
-
+import helper_functions as hf
 import models
 from bot import Bot
 
@@ -55,7 +53,7 @@ class ServerComms:
             dt, "%Y-%m-%d %H:%M:%S.%f"
             )
         msg = data["msg"]
-        msg_type = determineMessageType(data["msg"])
+        msg_type = hf.determineMessageType(data["msg"])
         message = data
         if(msg_type is not "link" and msg_type is not "img"):
             message["index"] = -1    

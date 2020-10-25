@@ -14,7 +14,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import models
 
-from helper_functions import checkIfUserExists,createNewUserEntry,determineMessageType
+#from helper_functions import checkIfUserExists,createNewUserEntry,determineMessageType
+import helper_functions as hf
 from  bot import Bot
 from server_comms import ServerComms
 
@@ -42,6 +43,8 @@ project_id = os.getenv("PROJECT_ID")
 image_id = os.getenv("IMAGE_ID")
 google_json = os.getenv("GOOGLE_JSON")
 
+
+
 app = flask.Flask(__name__)
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(
@@ -52,8 +55,8 @@ sc = ServerComms(database_uri,project_id,image_id,google_json,socketio)
 
 @socketio.on("login")
 def login(user):
-    if(not checkIfUserExists(sc.sessionLocal,user["email"])):
-        createNewUserEntry(sc.sessionLocal,user["email"],user["name"],user["img"])
+    if(not hf.checkIfUserExists(sc.sessionLocal,user["email"])):
+        hf.createNewUserEntry(sc.sessionLocal,user["email"],user["name"],user["img"])
     sid = request.sid
     sc.onConnect(sid)
 
@@ -72,8 +75,8 @@ def index():
     return flask.render_template("index.html")
 
 if __name__ == "__main__":
-    if(not checkIfUserExists(sc.sessionLocal,sc.chatBot.name)):
-        createNewUserEntry(sc.sessionLocal,sc.chatBot.name,\
+    if(not hf.checkIfUserExists(sc.sessionLocal,sc.chatBot.name)):
+        hf.createNewUserEntry(sc.sessionLocal,sc.chatBot.name,\
             sc.chatBot.name,sc.chatBot.img)
     socketio.run(app,
         host = os.getenv("IP", "0.0.0.0"),
