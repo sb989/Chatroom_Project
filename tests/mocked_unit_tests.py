@@ -6,6 +6,7 @@ from datetime import datetime
 import unittest
 import unittest.mock as mock
 from unittest.mock import patch
+from unittest.mock import MagicMock
 from flask_socketio import ConnectionRefusedError
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -45,9 +46,46 @@ DT_NOW = datetime.strptime("2020-10-15 13:57:02.043000","%Y-%m-%d %H:%M:%S.%f")
 TYPE = "type"
 REPLY = "reply"
 ERR_MSG = "err_msg"
+SID = "sid"
 
+class MockUser():
+    email = ""
+    name = ""
+    img = ""
+    def __init__(self,email,name,pic):
+        self.email = email
+        self.name = name
+        self.pic = pic
+    
+    def __repr__(self):
+        return "%s %s %s" %(self.email,self.name,self.pic)
+
+class MockMessage():
+    dt = ""
+    email = ""
+    message = ""
+    msg_type = ""
+    def __init__(self,dt,email,message,msg_type):
+        self.date_time = dt
+        self.email = email
+        self.message = message 
+        self.msg_type = msg_type
+        
+    
 class MockedUnitTests(unittest.TestCase):
     def setUp(self):
+        harry = MockUser("harry@gmail.com","harry","banana.png")
+        bobby = MockUser("bob@gmail.com","bobby","apple.png")
+
+        self.mock_users = [harry,bobby]
+        message1 = MockMessage(DT_NOW,harry.email,"hi","text")
+        message2 = MockMessage(DT_NOW,bobby.email,"hey","text")
+        message3 = MockMessage(DT_NOW,bobby.email,"hey","text")
+
+        self.mock_messages = [
+            message1,message2,message3
+        ]
+        
         self.sc = server_comms.ServerComms(
             database_uri,project_id,
             image_id,google_json)
@@ -165,7 +203,11 @@ class MockedUnitTests(unittest.TestCase):
             }
         ]
         
-        
+        self.success_on_connect = [
+            {
+                SID:5
+            }    
+        ]
     def test_record_message_success(self):
         for test in self.success_record_message:
             with patch("sqlalchemy.orm.session.Session.commit") as commit,\
@@ -274,6 +316,27 @@ class MockedUnitTests(unittest.TestCase):
                         self.chatBot.name,str(test[DT]),
                         "text",self.chatBot.img
                         )
-    
+                        
+    def query_messages(self,q):
+        query = MagicMock()
+        if repr(q) == repr(models.Message):
+            query.all = mock.Mock(return_value = self.mock_messages)
+        elif repr(q) == repr(models.Username):
+            query.all = mock.Mock(return_value = self.mock_users)
+        return query
+
+    def test_on_connect_success(self):
+        for test in self.success_on_connect:
+            with patch("sqlalchemy.orm.session.Session.query") as query,\
+            patch("sqlalchemy.orm.session.Session.close") as close,\
+            patch("server_comms.ServerComms.sendMessage") as send_mess,\
+            patch("server_comms.ServerComms.updateRoomCount") as update_room:
+                query.side_effect = self.query_messages
+                self.sc.onConnect(test[SID])
+                self.assertEqual(query.call_count,2)
+                close.assert_called_once()
+                send_mess.assert_called_once()
+                update_room.assert_called_once()
+                
 if __name__ == '__main__':
     unittest.main()
