@@ -1,6 +1,7 @@
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
+from datetime import datetime
 import unittest
 import sys
 sys.path.insert(1,'../')
@@ -42,6 +43,9 @@ CREATED_MESSAGE = "created_message"
 
 USERNAME_DB_PRINT = "username_db_print"
 MESSAGE_DB_PRINT = "message_db_print"
+
+DT_NOW = datetime.strptime("2020-10-15 13:57:02.043000","%Y-%m-%d %H:%M:%S.%f")
+
 class UnmockedUnitTests(unittest.TestCase):
     
     
@@ -55,84 +59,7 @@ class UnmockedUnitTests(unittest.TestCase):
             database_uri,project_id,
             image_id,google_json,socketio)
 
-        
-        self.success_server_comms_create_message = [
-            {
-                MESSAGE:"hello",
-                EMAIL:"123sesamestreet@njit.edu",
-                NAME:"Oscar",
-                DT:"dt",
-                MSG_TYPE:"text",
-                IMG:"apple.png",
-                CREATED_MESSAGE:{
-                    "msg":"hello",
-                    "email":"123sesamestreet@njit.edu",
-                    "name":"Oscar",
-                    "dt":"dt",
-                    "msg_type":"text",
-                    "img":"apple.png",
-                    "index":-1,
-                    "same_or_diff_sender":""
-                }
-            },
-            {
-                MESSAGE:"hello",
-                EMAIL:"123sesamestreet@njit.edu",
-                NAME:"Oscar",
-                DT:"dt",
-                MSG_TYPE:"text",
-                IMG:"apple.png",
-                INDEX:3,
-                CREATED_MESSAGE:{
-                    "msg":"hello",
-                    "email":"123sesamestreet@njit.edu",
-                    "name":"Oscar",
-                    "dt":"dt",
-                    "msg_type":"text",
-                    "img":"apple.png",
-                    "index":3,
-                    "same_or_diff_sender":""
-                }
-            },{
-                MESSAGE:"hello",
-                EMAIL:"123sesamestreet@njit.edu",
-                NAME:"Oscar",
-                DT:"dt",
-                MSG_TYPE:"text",
-                IMG:"apple.png",
-                SODS:"same_sender",
-                CREATED_MESSAGE:{
-                    "msg":"hello",
-                    "email":"123sesamestreet@njit.edu",
-                    "name":"Oscar",
-                    "dt":"dt",
-                    "msg_type":"text",
-                    "img":"apple.png",
-                    "index":-1,
-                    "same_or_diff_sender":"same_sender"
-                }
-            },{
-                MESSAGE:"hello",
-                EMAIL:"123sesamestreet@njit.edu",
-                NAME:"Oscar",
-                DT:"dt",
-                MSG_TYPE:"text",
-                IMG:"apple.png",
-                INDEX:3,
-                SODS:"same_sender",
-                CREATED_MESSAGE:{
-                    "msg":"hello",
-                    "email":"123sesamestreet@njit.edu",
-                    "name":"Oscar",
-                    "dt":"dt",
-                    "msg_type":"text",
-                    "img":"apple.png",
-                    "index":3,
-                    "same_or_diff_sender":"same_sender"
-                }
-            }
-            ]
-        self.success_bot_message_read_params = [
+        self.success_bot_about = [
             {
                 MESSAGE:"!! about",
                 BOT_RESPONSE:{
@@ -140,7 +67,9 @@ class UnmockedUnitTests(unittest.TestCase):
                     "send pictures, and more!".format(self.chatBot.name),
                     BOT_RESPONSE_TYPE:"text"
                 }
-            },
+            }
+        ]
+        self.success_bot_help = [
             {
                 MESSAGE:"!! help",
                 BOT_RESPONSE:{
@@ -157,14 +86,21 @@ class UnmockedUnitTests(unittest.TestCase):
                             "Supported symbols are +, -, /, *, (, and ).\n",
                     BOT_RESPONSE_TYPE:"text"
                 }
-            },
+            }
+        ]
+        
+        self.success_bot_regular_message = [
             {
                 MESSAGE:"Hello World",
                 BOT_RESPONSE:{
                     BOT_RESPONSE_DATA:None,
                     BOT_RESPONSE_TYPE:None
                 }
-            },
+            }
+            
+        ]
+        
+        self.success_bot_undefinded_command = [
             {
                 MESSAGE:"!! animals",
                 BOT_RESPONSE:{
@@ -173,7 +109,10 @@ class UnmockedUnitTests(unittest.TestCase):
                     "To get a list of commands enter !! help.",
                     BOT_RESPONSE_TYPE:"text"
                 }
-            },
+            }
+        ]
+        
+        self.success_bot_math = [
             {
                 MESSAGE:"!! math 2+2",
                 BOT_RESPONSE:{
@@ -184,7 +123,7 @@ class UnmockedUnitTests(unittest.TestCase):
             
         ]
         
-        self.failure_bot_message_read_params = [
+        self.failure_bot_math = [
             {
                 MESSAGE:"!! math 2+",
                 BOT_RESPONSE:{
@@ -192,7 +131,7 @@ class UnmockedUnitTests(unittest.TestCase):
                     BOT_RESPONSE_TYPE:"text"
                 }
             }
-            ]
+        ]
         
         self.success_determine_message_type_params = [
             {
@@ -233,26 +172,137 @@ class UnmockedUnitTests(unittest.TestCase):
             }    
         ]
         
+        self.failure_db_username_print = [
+            {
+                
+            }    
+        ]
+        
         self.success_db_message_print = [
             {
-                DT:"dt",
+                DT:DT_NOW,
                 EMAIL:"todd@gmail.com",
                 MESSAGE:"jello",
                 MSG_TYPE:"text",
-                MESSAGE_DB_PRINT:"Message: dt todd@gmail.com jello text"
+                MESSAGE_DB_PRINT:"Message: {} todd@gmail.com jello text".format(DT_NOW)
             }    
         
         ]
     
-    def test_bot_message_read_success(self):
-        for test in self.success_bot_message_read_params:
+    
+        self.success_server_comms_create_message = [
+            {
+                MESSAGE:"hello",
+                EMAIL:"123sesamestreet@njit.edu",
+                NAME:"Oscar",
+                DT:DT_NOW,
+                MSG_TYPE:"text",
+                IMG:"apple.png",
+                CREATED_MESSAGE:{
+                    "msg":"hello",
+                    "email":"123sesamestreet@njit.edu",
+                    "name":"Oscar",
+                    "dt":DT_NOW,
+                    "msg_type":"text",
+                    "img":"apple.png",
+                    "index":-1,
+                    "same_or_diff_sender":""
+                }
+            },
+            {
+                MESSAGE:"hello",
+                EMAIL:"123sesamestreet@njit.edu",
+                NAME:"Oscar",
+                DT:DT_NOW,
+                MSG_TYPE:"text",
+                IMG:"apple.png",
+                INDEX:3,
+                CREATED_MESSAGE:{
+                    "msg":"hello",
+                    "email":"123sesamestreet@njit.edu",
+                    "name":"Oscar",
+                    "dt":DT_NOW,
+                    "msg_type":"text",
+                    "img":"apple.png",
+                    "index":3,
+                    "same_or_diff_sender":""
+                }
+            },{
+                MESSAGE:"hello",
+                EMAIL:"123sesamestreet@njit.edu",
+                NAME:"Oscar",
+                DT:DT_NOW,
+                MSG_TYPE:"text",
+                IMG:"apple.png",
+                SODS:"same_sender",
+                CREATED_MESSAGE:{
+                    "msg":"hello",
+                    "email":"123sesamestreet@njit.edu",
+                    "name":"Oscar",
+                    "dt":DT_NOW,
+                    "msg_type":"text",
+                    "img":"apple.png",
+                    "index":-1,
+                    "same_or_diff_sender":"same_sender"
+                }
+            },{
+                MESSAGE:"hello",
+                EMAIL:"123sesamestreet@njit.edu",
+                NAME:"Oscar",
+                DT:DT_NOW,
+                MSG_TYPE:"text",
+                IMG:"apple.png",
+                INDEX:3,
+                SODS:"same_sender",
+                CREATED_MESSAGE:{
+                    "msg":"hello",
+                    "email":"123sesamestreet@njit.edu",
+                    "name":"Oscar",
+                    "dt":DT_NOW,
+                    "msg_type":"text",
+                    "img":"apple.png",
+                    "index":3,
+                    "same_or_diff_sender":"same_sender"
+                }
+            }
+            ]
+    def test_bot_about_success(self):
+        for test in self.success_bot_about:
+            response = self.chatBot.messageRead(test[MESSAGE])
+            expected = test[BOT_RESPONSE]
+            self.assertEqual(expected[BOT_RESPONSE_TYPE],response["type"])
+            self.assertEqual(expected[BOT_RESPONSE_DATA],response["data"])
+    
+    def test_bot_help_success(self):
+        for test in self.success_bot_help:
+            response = self.chatBot.messageRead(test[MESSAGE])
+            expected = test[BOT_RESPONSE]
+            self.assertEqual(expected[BOT_RESPONSE_TYPE],response["type"])
+            self.assertEqual(expected[BOT_RESPONSE_DATA],response["data"])
+    
+    def test_bot_regular_message_success(self):
+        for test in self.success_bot_regular_message:
+            response = self.chatBot.messageRead(test[MESSAGE])
+            expected = test[BOT_RESPONSE]
+            self.assertEqual(expected[BOT_RESPONSE_TYPE],response["type"])
+            self.assertEqual(expected[BOT_RESPONSE_DATA],response["data"])
+    
+    def test_bot_undefinded_command_success(self):
+        for test in self.success_bot_undefinded_command:
+            response = self.chatBot.messageRead(test[MESSAGE])
+            expected = test[BOT_RESPONSE]
+            self.assertEqual(expected[BOT_RESPONSE_TYPE],response["type"])
+            self.assertEqual(expected[BOT_RESPONSE_DATA],response["data"])
+            
+    def test_bot_help_math(self):
+        for test in self.success_bot_math:
             response = self.chatBot.messageRead(test[MESSAGE])
             expected = test[BOT_RESPONSE]
             self.assertEqual(expected[BOT_RESPONSE_TYPE],response["type"])
             self.assertEqual(expected[BOT_RESPONSE_DATA],response["data"])
     
     def test_bot_message_read_failure(self):
-        for test in self.failure_bot_message_read_params:
+        for test in self.failure_bot_math:
             response = self.chatBot.messageRead(test[MESSAGE])
             expected = test[BOT_RESPONSE]
             self.assertEqual(expected[BOT_RESPONSE_TYPE],response["type"])
@@ -347,5 +397,7 @@ class UnmockedUnitTests(unittest.TestCase):
             response = repr(msg)    
             expected = test[MESSAGE_DB_PRINT]
             self.assertEqual(response,expected)        
+            
+    
 if __name__ == "__main__":
     unittest.main()
