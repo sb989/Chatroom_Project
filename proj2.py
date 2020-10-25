@@ -14,11 +14,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import models
 
-#from helper_functions import checkIfUserExists,createNewUserEntry,determineMessageType
 import helper_functions as hf
 from  bot import Bot
-from server_comms import ServerComms
-
+#from server_comms import ServerComms
+import server_comms
 dotenv_path = join(
     dirname(__file__),
     "../keys/sql.env"
@@ -47,12 +46,12 @@ google_json = os.getenv("GOOGLE_JSON")
 
 app = flask.Flask(__name__)
 socketio = flask_socketio.SocketIO(app)
+
+sc = server_comms.ServerComms(database_uri,project_id,image_id,google_json)
+
 socketio.init_app(
     app, cors_allowed_origins = "*"
     )
-    
-sc = ServerComms(database_uri,project_id,image_id,google_json,socketio)
-
 @socketio.on("login")
 def login(user):
     if(not hf.checkIfUserExists(sc.sessionLocal,user["email"])):

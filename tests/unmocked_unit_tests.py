@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 from datetime import datetime
 import unittest
 import sys
-sys.path.insert(1,'../')
+sys.path.insert(1,
+join(dirname(__file__), '../'))
 from bot import Bot
 import helper_functions as hf
 import server_comms
@@ -57,7 +58,7 @@ class UnmockedUnitTests(unittest.TestCase):
             
         self.sc = server_comms.ServerComms(
             database_uri,project_id,
-            image_id,google_json,socketio)
+            image_id,google_json)
 
         self.success_bot_about = [
             {

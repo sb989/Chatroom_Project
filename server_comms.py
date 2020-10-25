@@ -3,6 +3,8 @@ import datetime
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import __main__ as main
+import proj2 as p2
 import helper_functions as hf
 import models
 from bot import Bot
@@ -34,18 +36,30 @@ class ServerComms:
         return message
         
     def sendMessage(self,tag,message,room=None):
-        if(room == None):#when room is not included it sends to everyone
-            self.socketio.emit(tag,message)
+        file = main.__file__.split("/")
+        file = file[-1]
+        if(file == "proj2.py"):
+            file = main
         else:
-            self.socketio.emit(tag,message,room=room)
-        
+            file = p2
+        try:
+            if(room == None):#when room is not included it sends to everyone
+                file.socketio.emit(tag,message)
+            else:
+                file.socketio.emit(tag,message,room=room)
+        except Exception as e:
+            print("Failed to send message.",e)
+    
     def recordMessage(self,email,msg,msg_type,dt):
         db_msg = models.Message(dt,email,msg,msg_type)
-        db = self.sessionLocal()
-        db.add(db_msg)
-        db.commit()
-        db.close()
-        
+        try:
+            db = self.sessionLocal()
+            db.add(db_msg)
+            db.commit()
+            db.close()
+        except:
+            db.close()
+    
     def receivedNewMessage(self,data):
         email = data["email"]
         dt = data["dt"]
@@ -53,6 +67,7 @@ class ServerComms:
             dt, "%Y-%m-%d %H:%M:%S.%f"
             )
         msg = data["msg"]
+    
         msg_type = hf.determineMessageType(data["msg"])
         message = data
         if(msg_type is not "link" and msg_type is not "img"):
@@ -62,16 +77,16 @@ class ServerComms:
         message["dt"] = str(dt)
         message["msg_type"] = msg_type
         self.sendMessage(tag,message)
-        self.chatBotResponse(msg,self.chatBot,self.sessionLocal)
-
-    def chatBotResponse(self,message_received,chatBot,sessionLocal):
+        self.chatBotResponse(msg,self.chatBot)
+        
+    def chatBotResponse(self,message_received,chatBot):
         reply = chatBot.messageRead(message_received)
         dt = str(datetime.datetime.now())
         if(reply["type"]!= None):
             msg = reply["data"]
             if(msg == None):
-                msg = "Bot experienced an error.\
-                    Sorry for the inconvenience"
+                msg = "Bot experienced an error."\
+                    "Sorry for the inconvenience"
                 reply["type"] = "text"
             tag = "Bot"
             message = self.createMessage(
@@ -125,7 +140,7 @@ class ServerComms:
     def __init__(
             self,database_uri,
             project_id,image_id,
-            google_json,socketio
+            google_json
             ):
         self.room_count = 0
         self.engine = create_engine(
@@ -138,4 +153,4 @@ class ServerComms:
         self.chatBot = Bot(
             project_id,image_id,
             google_json,'static/Robot.png')
-        self.socketio = socketio
+        # self.socketio = flask_socketio.SocketIO(app)
