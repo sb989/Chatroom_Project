@@ -3,8 +3,7 @@ import requests
 import json
 import base64
 
-from google.cloud import translate
-from google.oauth2 import service_account
+
 from Equation import Expression
 from bot_helper_functions import translateToRandomLang
 
@@ -49,12 +48,12 @@ class Bot:
     def funTranslate(self,message):
         err = "Error Translating. Sorry!"
 
-        client = translate.TranslationServiceClient()
-        location = "global"
-        parent = f"projects/{self.project_id}/locations/{location}"
-        
+        # client = translate.TranslationServiceClient()
+        # location = "global"
+        # parent = f"projects/{self.project_id}/locations/{location}"
+        p_id = self.project_id
         translated_mess = translateToRandomLang(
-            client,parent,message)
+            p_id,message)
         if(translated_mess == None):
             return err
         else:
@@ -65,9 +64,7 @@ class Bot:
             query = query.replace(' ','+')
             url = 'https://pixabay.com/api/?key={}&q={}&image_type=photo'\
                 .format(self.image_id,query)
-            print(url)
             response = requests.get(url)
-            print(response)
             response = response.json()
             if("totalHits" not in response):
                 return None

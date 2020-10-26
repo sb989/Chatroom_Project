@@ -14,6 +14,7 @@ sys.path.insert(1,
 join(dirname(__file__), '../'))
 from bot import Bot
 import helper_functions as hf
+import bot_helper_functions as bhf
 import server_comms
 import models
 
@@ -48,6 +49,9 @@ REPLY = "reply"
 ERR_MSG = "err_msg"
 SID = "sid"
 IMG = "img"
+LANG = "lang"
+RESPONSE = "response"
+
 class MockUser():
     email = ""
     name = ""
@@ -94,6 +98,44 @@ class MockedUnitTests(unittest.TestCase):
             project_id,image_id,
             google_json,'static/Robot.png')   
             
+        self.mock_image_search_json = {
+        	"total": 4692,
+        	"totalHits": 500,
+        	"hits": [
+        	    {
+        	        "id": 195893,
+        	        "pageURL": "https://pixabay.com/en/blossom-bloom-flower-195893/",
+        	        "type": "photo",
+        	        "tags": "blossom, bloom, flower",
+        	        "previewURL": "https://cdn.pixabay.com/photo/2013/10/15/09/12/flower-195893_150.jpg",
+        	        "previewWidth": 150,
+        	        "previewHeight": 84,
+        	        "webformatURL": "https://pixabay.com/get/35bbf209e13e39d2_640.jpg",
+        	        "webformatWidth": 640,
+        	        "webformatHeight": 360,
+        	        "largeImageURL": "https://pixabay.com/get/ed6a99fd0a76647_1280.jpg",
+        	        "fullHDURL": "https://pixabay.com/get/ed6a9369fd0a76647_1920.jpg",
+        	        "imageURL": "https://pixabay.com/get/ed6a9364a9fd0a76647.jpg",
+        	        "imageWidth": 4000,
+        	        "imageHeight": 2250,
+        	        "imageSize": 4731420,
+        	        "views": 7671,
+        	        "downloads": 6439,
+        	        "favorites": 1,
+        	        "likes": 5,
+        	        "comments": 2,
+        	        "user_id": 48777,
+        	        "user": "Josch13",
+        	        "userImageURL": "https://cdn.pixabay.com/user/2013/11/05/02-10-23-764_250x250.jpg",
+        	    },
+        	    {
+        	        "id": 73424
+        	    },
+        	]
+        	}
+        
+        self.mock_image_search_json_error = self.mock_image_search_json.copy()
+        self.mock_image_search_json_error.pop("totalHits")
             
         self.success_send_message = [
             {
@@ -235,6 +277,71 @@ class MockedUnitTests(unittest.TestCase):
             }
         ]
         
+        self.success_get_supported_languages = [
+            {
+                LANG:{
+                    "languages":[
+                    {"language_code":"af"},
+                    {"language_code":"sq"}
+                    ]
+                },
+                RESULT:{
+                    "languages":[
+                    {"language_code":"af"},
+                    {"language_code":"sq"}
+                    ]
+                }
+            },
+            {
+                LANG:{
+                    "languages":[]
+                },
+                RESULT:None
+            }
+        ]
+        
+        self.failure_get_supported_languages = [
+            {
+                LANG:{
+                    "languages":[
+                    {"language_code":"af"},
+                    {"language_code":"sq"}
+                    ]
+                },
+                RESULT:None
+            }
+        ]
+        
+        
+        self.success_bot_image_search = [
+            {
+                MESSAGE:"!! image flower",
+                RESPONSE:self.mock_image_search_json,
+                RESULT:{
+                    DATA:"https://cdn.pixabay.com/photo/2013/10/15/09/12/flower-195893_150.jpg",
+                    TYPE:"img"
+                }
+            },
+            {
+                MESSAGE:"!! image flower",
+                RESPONSE:self.mock_image_search_json_error,
+                RESULT:{
+                    DATA:None,
+                    TYPE:"img"
+                }
+            }
+        ]
+        
+        self.failure_bot_image_search = [
+            {
+                MESSAGE:"!! image flower",
+                RESPONSE: self.mock_image_search_json,
+                RESULT:{
+                    DATA:None,
+                    TYPE:"img"
+                }
+            }
+        ]
         
     def test_record_message_success(self):
         for test in self.success_record_message:
@@ -399,6 +506,50 @@ class MockedUnitTests(unittest.TestCase):
                 sessLocal.return_value.commit.assert_called_once()
                 sessLocal.return_value.close.assert_called_once()
                 
+
+    def test_get_supported_languages_success(self):
+        for test in self.success_get_supported_languages:
+            with patch ("google.cloud.translate."\
+            "TranslationServiceClient") as client:
+                client.get_supported_languages.return_value.\
+                languages = test[LANG]["languages"]
+                client.get_supported_languages.return_value.values = test[LANG]
+                result = bhf.getSupportedLanguages(client,1)
+                if result != None:
+                    result = result.values
+                expected = test[RESULT]
+                self.assertEqual(result,expected)
                 
+    def test_get_supported_languages_failure(self):
+        for test in self.failure_get_supported_languages:
+            with patch ("google.cloud.translate."\
+            "TranslationServiceClient") as client:
+                client.get_supported_languages.side_effect = Exception()
+                result = bhf.getSupportedLanguages(client,1)
+                expected = test[RESULT]
+                self.assertEqual(result,expected)
+                self.assertRaises(Exception)
+                
+    def test_bot_image_search_success(self):
+        for test in self.success_bot_image_search:
+            with patch("bot.requests") as requests,\
+            patch("bot.random") as random:
+                random.randint.return_value = 0
+                requests.get.return_value.value = test[RESPONSE]
+                requests.get.return_value.json.return_value = requests.get.return_value.value 
+                result = self.chatBot.messageRead(test[MESSAGE])
+                expected = test[RESULT]
+                self.assertDictEqual(result,expected)
+                
+    def test_bot_image_search_failure(self):
+        for test in self.failure_bot_image_search:
+            with patch("bot.requests") as requests,\
+            patch("bot.random") as random:
+                random.randint.return_value = 0
+                requests.get.side_effect = Exception()
+                result = self.chatBot.messageRead(test[MESSAGE])
+                expected = test[RESULT]
+                self.assertDictEqual(result,expected)
+                self.assertRaises(Exception)
 if __name__ == '__main__':
     unittest.main()

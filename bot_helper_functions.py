@@ -1,5 +1,6 @@
 import random
-
+from google.cloud import translate
+from google.oauth2 import service_account
 def getSupportedLanguages(client, parent):
     try:
         supported_langs = client.get_supported_languages(parent=parent)
@@ -45,7 +46,11 @@ def translateFromSourceToTarget(client,parent,sourceLang,targetLang,message):
         print("translateFromSourceToTarget error",e)
         return None
         
-def translateToRandomLang(client, parent,message):
+def translateToRandomLang(project_id,message):
+    client = translate.TranslationServiceClient()
+    location = "global"
+    parent = f"projects/{project_id}/locations/{location}"
+    
     try:
         supported_langs = getSupportedLanguages(client, parent)
         if(supported_langs!=None):
