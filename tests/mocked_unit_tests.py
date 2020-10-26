@@ -47,7 +47,7 @@ TYPE = "type"
 REPLY = "reply"
 ERR_MSG = "err_msg"
 SID = "sid"
-
+IMG = "img"
 class MockUser():
     email = ""
     name = ""
@@ -220,6 +220,21 @@ class MockedUnitTests(unittest.TestCase):
             }
         ]
         
+        self.failure_check_if_user_exists = [
+            {
+                EMAIL:"s1@njit.edu",
+                RESULT:False
+            }
+        ]
+        
+        self.success_create_user_entry = [
+            {
+                EMAIL:"s1@njit.edu",
+                NAME:"sarah",
+                IMG:"apple.png"
+            }
+        ]
+        
         
     def test_record_message_success(self):
         for test in self.success_record_message:
@@ -360,15 +375,30 @@ class MockedUnitTests(unittest.TestCase):
                 return filter_mock
         filter_mock.first.return_value = None
         return filter_mock
+   
     def test_check_if_users_exists_success(self):
         for test in self.success_check_if_user_exists:
-            with patch("sqlalchemy.orm.session.Session") as sessLocal:#,\
-            # patch("models.Username") as user:
-                #p = mock.PropertyMock(side_effect=self.checkIfUser)
-                #sessLocal.query = p
+            with patch("sqlalchemy.orm.session.Session") as sessLocal:
                 sessLocal.return_value.query.return_value.filter.side_effect = self.checkIfUser
                 result = hf.checkIfUserExists(sessLocal,test[EMAIL])
                 expected = test[RESULT]
                 self.assertEqual(result,expected)
+                
+    def test_check_if_users_exists_failure(self):
+        for test in self.failure_check_if_user_exists:
+            with patch("sqlalchemy.orm.session.Session") as sessLocal:
+                sessLocal.return_value.query.side_effect = SQLAlchemyError()
+                hf.checkIfUserExists(sessLocal,test[EMAIL])
+                self.assertRaises(SQLAlchemyError)
+                
+    def test_create_user_entry_success(self):
+        for test in self.success_create_user_entry:
+            with patch("sqlalchemy.orm.session.Session") as sessLocal:
+                hf.createNewUserEntry(sessLocal,test[EMAIL],test[NAME],test[IMG])
+                sessLocal.return_value.add.assert_called_once()
+                sessLocal.return_value.commit.assert_called_once()
+                sessLocal.return_value.close.assert_called_once()
+                
+                
 if __name__ == '__main__':
     unittest.main()
