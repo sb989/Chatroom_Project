@@ -208,6 +208,19 @@ class MockedUnitTests(unittest.TestCase):
                 SID:5
             }    
         ]
+        
+        self.success_check_if_user_exists = [
+            {
+                EMAIL:"s1@njit.edu",
+                RESULT:False
+            },
+            {
+                EMAIL:"harry@gmail.com",
+                RESULT:True
+            }
+        ]
+        
+        
     def test_record_message_success(self):
         for test in self.success_record_message:
             with patch("sqlalchemy.orm.session.Session.commit") as commit,\
@@ -337,6 +350,25 @@ class MockedUnitTests(unittest.TestCase):
                 close.assert_called_once()
                 send_mess.assert_called_once()
                 update_room.assert_called_once()
-                
+    
+    def checkIfUser(self,user):
+        filter_mock = MagicMock()
+        email = user.get_children()[1].value
+        for user in self.mock_users:
+            if user.email == email:
+                filter_mock.first.return_value = True
+                return filter_mock
+        filter_mock.first.return_value = None
+        return filter_mock
+    def test_check_if_users_exists_success(self):
+        for test in self.success_check_if_user_exists:
+            with patch("sqlalchemy.orm.session.Session") as sessLocal:#,\
+            # patch("models.Username") as user:
+                #p = mock.PropertyMock(side_effect=self.checkIfUser)
+                #sessLocal.query = p
+                sessLocal.return_value.query.return_value.filter.side_effect = self.checkIfUser
+                result = hf.checkIfUserExists(sessLocal,test[EMAIL])
+                expected = test[RESULT]
+                self.assertEqual(result,expected)
 if __name__ == '__main__':
     unittest.main()
