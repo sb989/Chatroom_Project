@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-export function ProfilePic(params)
-{
-    var m = params['m'];
-    return (<div className = "profileImgBox">
-                <img className = "profileImg" src = {m['img']}></img>
-            </div>
-            )
+export default function ProfilePic(params) {
+  const { m } = params;
+  return (
+    <div className="profileImgBox">
+      <img className="profileImg" src={m.img} alt="img" />
+    </div>
+  );
 }

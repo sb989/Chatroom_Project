@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Socket } from './Socket';
-import { Send } from './Send';
+import Socket from './Socket';
+import Send from './Send';
 import Messages from './Messages';
 
 export default function ChatBox(params) {
@@ -9,20 +9,21 @@ export default function ChatBox(params) {
   const { setMessages } = params;
   const { email } = params;
 
-  function createMessage(text, dt, s_name, msg_type, s_email, img, same_or_diff_sender) {
-    if (same_or_diff_sender === '' && messages.length > 0 && messages[messages.length - 1].email === s_email) {
-      same_or_diff_sender = 'same_sender';
-    } else if (same_or_diff_sender === '') {
-      same_or_diff_sender = 'diff_sender';
+  function createMessage(text, dt, sName, msgType, sEmail, img, sameOrDiffSender) {
+    let newSameOrDiffSender = sameOrDiffSender;
+    if (sameOrDiffSender === '' && messages.length > 0 && messages[messages.length - 1].email === sEmail) {
+      newSameOrDiffSender = 'same_sender';
+    } else if (sameOrDiffSender === '') {
+      newSameOrDiffSender = 'diff_sender';
     }
     const message = {
       dt,
-      name: s_name,
+      name: sName,
       text,
-      msg_type,
-      email: s_email,
+      msgType,
+      email: sEmail,
       img,
-      same_or_diff_sender,
+      sameOrDiffSender: newSameOrDiffSender,
     };
     return message;
   }

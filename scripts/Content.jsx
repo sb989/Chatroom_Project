@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Socket } from './Socket';
+import Socket from './Socket';
 import ChatBox from './ChatBox';
-import { GoogleButton } from './GoogleButton';
+import GoogleButton from './GoogleButton';
 
 export default function Content() {
   const [messages, setMessages] = React.useState([]);

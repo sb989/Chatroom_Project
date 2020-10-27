@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MessageBox } from './MessageBox';
+import MessageBox from './MessageBox';
 
 export default function Message(params) {
   const { m } = params;
@@ -21,7 +21,7 @@ export default function Message(params) {
   return (
     <div
       key={index}
-      className={m.same_or_diff_sender}
+      className={m.sameOrDiffSender}
       index={index}
     >
       <MessageBox
