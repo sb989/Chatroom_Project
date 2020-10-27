@@ -17,7 +17,6 @@ import models
 import helper_functions as hf
 from bot import Bot
 
-# from server_comms import ServerComms
 import server_comms
 
 dotenv_path = join(dirname(__file__), "../keys/sql.env")
@@ -69,7 +68,6 @@ def index():
 
 
 if __name__ == "__main__":
-    # sc.Base.metadata.create_all(bind=sc.engine)
     models.createTable()
     if not hf.checkIfUserExists(sc.sessionLocal, sc.chatBot.name):
         hf.createNewUserEntry(

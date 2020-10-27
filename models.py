@@ -40,5 +40,6 @@ class Message(proj2.sc.Base):
             self.msg_type,
         )
 
+
 def createTable():
     proj2.sc.Base.metadata.create_all(bind=proj2.sc.engine)
