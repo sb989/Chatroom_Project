@@ -9,49 +9,48 @@ import helper_functions as hf
 import models
 from bot import Bot
 
+
 class ServerComms:
-    
-    def updateRoomCount(self,room_count_change):
+    def updateRoomCount(self, room_count_change):
         self.room_count += room_count_change
-        if(self.room_count < 0):
+        if self.room_count < 0:
             self.room_count = 0
         tag = "room_count"
-        message = {"count":self.room_count}
-        self.sendMessage(tag,message)
-        
+        message = {"count": self.room_count}
+        self.sendMessage(tag, message)
+
     def createMessage(
-            self,msg,name,email,
-            dt,msg_type,img,index = -1,
-            same_or_diff_sender = ''):
+        self, msg, name, email, dt, msg_type, img, index=-1, same_or_diff_sender=""
+    ):
         message = {
-            "msg":msg,
-            "email":email,
-            "name":name,
-            "dt":dt,
-            "msg_type":msg_type,
-            "img":img,
-            "index":index,
-            "same_or_diff_sender":same_or_diff_sender
+            "msg": msg,
+            "email": email,
+            "name": name,
+            "dt": dt,
+            "msg_type": msg_type,
+            "img": img,
+            "index": index,
+            "same_or_diff_sender": same_or_diff_sender,
         }
         return message
-        
-    def sendMessage(self,tag,message,room=None):
+
+    def sendMessage(self, tag, message, room=None):
         file = main.__file__.split("/")
         file = file[-1]
-        if(file == "proj2.py"):
+        if file == "proj2.py":
             file = main
         else:
             file = p2
         try:
-            if(room == None):#when room is not included it sends to everyone
-                file.socketio.emit(tag,message)
+            if room == None:  # when room is not included it sends to everyone
+                file.socketio.emit(tag, message)
             else:
-                file.socketio.emit(tag,message,room=room)
+                file.socketio.emit(tag, message, room=room)
         except Exception as e:
-            print("Failed to send message.",e)
-    
-    def recordMessage(self,email,msg,msg_type,dt):
-        db_msg = models.Message(dt,email,msg,msg_type)
+            print("Failed to send message.", e)
+
+    def recordMessage(self, email, msg, msg_type, dt):
+        db_msg = models.Message(dt, email, msg, msg_type)
         try:
             db = self.sessionLocal()
             db.add(db_msg)
@@ -59,67 +58,61 @@ class ServerComms:
             db.close()
         except:
             db.close()
-    
-    def receivedNewMessage(self,data):
+
+    def receivedNewMessage(self, data):
         email = data["email"]
         dt = data["dt"]
-        dt = datetime.datetime.strptime(
-            dt, "%Y-%m-%d %H:%M:%S.%f"
-            )
+        dt = datetime.datetime.strptime(dt, "%Y-%m-%d %H:%M:%S.%f")
         msg = data["msg"]
-    
+
         msg_type = hf.determineMessageType(data["msg"])
         message = data
-        if(msg_type is not "link" and msg_type is not "img"):
-            message["index"] = -1    
-        self.recordMessage(email,msg,msg_type,dt)
+        if msg_type is not "link" and msg_type is not "img":
+            message["index"] = -1
+        self.recordMessage(email, msg, msg_type, dt)
         tag = "new message"
         message["dt"] = str(dt)
         message["msg_type"] = msg_type
-        self.sendMessage(tag,message)
-        self.chatBotResponse(msg,self.chatBot)
-        
-    def chatBotResponse(self,message_received,chatBot):
+        self.sendMessage(tag, message)
+        self.chatBotResponse(msg, self.chatBot)
+
+    def chatBotResponse(self, message_received, chatBot):
         reply = chatBot.messageRead(message_received)
         dt = str(datetime.datetime.now())
-        if(reply["type"]!= None):
+        if reply["type"] != None:
             msg = reply["data"]
-            if(msg == None):
-                msg = "Bot experienced an error."\
-                    "Sorry for the inconvenience"
+            if msg == None:
+                msg = "Bot experienced an error." "Sorry for the inconvenience"
                 reply["type"] = "text"
             tag = "Bot"
             message = self.createMessage(
-                msg,self.chatBot.name,
-                self.chatBot.name,dt,
-                reply["type"],chatBot.img)
-            self.sendMessage(tag,message)
+                msg,
+                self.chatBot.name,
+                self.chatBot.name,
+                dt,
+                reply["type"],
+                chatBot.img,
+            )
+            self.sendMessage(tag, message)
             email = chatBot.name
             msg = reply["data"]
             msg_type = reply["type"]
-            self.recordMessage(email,msg,msg_type,dt)
-    
-    def onConnect(self,sid):
+            self.recordMessage(email, msg, msg_type, dt)
+
+    def onConnect(self, sid):
         db = self.sessionLocal()
-        msgs = db.query(
-            models.Message
-            ).all()
-        usrs = db.query(
-            models.Username
-            ).all()
+        msgs = db.query(models.Message).all()
+        usrs = db.query(models.Username).all()
         db.close()
-        messages = {"messages":[]}
+        messages = {"messages": []}
         users = {}
         for usr in usrs:
-            users[usr.email] = {
-                "name":usr.name,
-                "img":usr.pic
-                }
+            users[usr.email] = {"name": usr.name, "img": usr.pic}
         size = len(msgs)
         for i in range(size):
             same_or_diff_sender = "diff_sender"
             msg = msgs[i]
-            if(i > 0 and msg.email == msgs[i-1].email):
+            if i > 0 and msg.email == msgs[i - 1].email:
                 same_or_diff_sender = "same_sender"
             name = users[msg.email]["name"]
             email = msg.email
@@ -128,29 +121,25 @@ class ServerComms:
             img = users[msg.email]["img"]
             messages["messages"].append(
                 self.createMessage(
-                    msg.message,name,email,
-                    dt,msg_type,img,
-                    same_or_diff_sender = same_or_diff_sender
-                    )
+                    msg.message,
+                    name,
+                    email,
+                    dt,
+                    msg_type,
+                    img,
+                    same_or_diff_sender=same_or_diff_sender,
                 )
+            )
         tag = "connected"
-        self.sendMessage(tag,messages,sid)
+        self.sendMessage(tag, messages, sid)
         self.updateRoomCount(1)
-        
-    def __init__(
-            self,database_uri,
-            project_id,image_id,
-            google_json
-            ):
+
+    def __init__(self, database_uri, project_id, image_id, google_json):
         self.room_count = 0
-        self.engine = create_engine(
-            database_uri,echo=False
-            )
+        self.engine = create_engine(database_uri, echo=False)
         self.sessionLocal = sessionmaker(
-            autocommit = False,autoflush = False,bind = self.engine
-            )
+            autocommit=False, autoflush=False, bind=self.engine
+        )
         self.Base = declarative_base()
-        self.chatBot = Bot(
-            project_id,image_id,
-            google_json,'static/Robot.png')
+        self.chatBot = Bot(project_id, image_id, google_json, "static/Robot.png")
         # self.socketio = flask_socketio.SocketIO(app)
