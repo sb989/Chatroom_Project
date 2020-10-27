@@ -1,7 +1,9 @@
 import * as React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import Socket from './Socket';
 import ChatBox from './ChatBox';
 import GoogleButton from './GoogleButton';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Content() {
   const [messages, setMessages] = React.useState([]);
@@ -24,7 +26,15 @@ export default function Content() {
   function disconnect() {
     React.useEffect(() => {
       Socket.on('disconnect', () => {
-        alert('You are not connected to the server. Messages might send when you reconnect.');
+        toast.warn('You are not connected to the server. Messages might send when you reconnect.', {
+          position: 'top-center',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       });
       return () => { Socket.removeEventListener('disconnect'); };
     });
@@ -43,6 +53,17 @@ export default function Content() {
             {roomCount}
           </h2>
         </div>
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <ChatBox
           name={name}
           setName={setName}
