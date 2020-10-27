@@ -27,12 +27,12 @@ jobs:
       - run:
           command: python ./tests/mocked_unit_tests.py && python ./tests/unmocked_unit_tests.py
           name: Chat Test
-    deploy:
-        steps:
-          - checkout
-          - run:
-              name: Deploy Master to Heroku
-              command: |
-                git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+  deploy:
+      steps:
+        - checkout
+        - run:
+            name: Deploy Master to Heroku
+            command: |
+              git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 
           
