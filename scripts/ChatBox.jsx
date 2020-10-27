@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Socket } from './Socket';
 import { Send } from './Send';
-import { Messages } from './Messages';
+import Messages from './Messages';
 
 export default function ChatBox(params) {
   const { name } = params;
