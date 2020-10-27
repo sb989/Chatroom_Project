@@ -1,8 +1,19 @@
+workflows:
+  version: 2.1
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
 version: 2.1
 
 orbs:
   python: circleci/python@0.2.1
-  heroku: circleci/heroku@1.2.2 # Invoke the Heroku orb
 
 
 jobs:
@@ -16,12 +27,13 @@ jobs:
       - run:
           command: python ./tests/mocked_unit_tests.py && python ./tests/unmocked_unit_tests.py
           name: Chat Test
-
+    deploy:
+        steps:
+          - checkout
+          - run:
+              name: Deploy Master to Heroku
+              command: |
+                git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 workflows:
-  main:
-    jobs:
-      - build-and-test
-  heroku_deploy:
-    jobs:
-      - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
+
           
