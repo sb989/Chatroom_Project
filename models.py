@@ -41,4 +41,4 @@ class Message(proj2.sc.Base):
         )
 
 
-proj2.sc.Base.metadata.create_all(bind=proj2.sc.engine)
+# proj2.sc.Base.metadata.create_all(bind=proj2.sc.engine)

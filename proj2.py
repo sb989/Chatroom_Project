@@ -69,6 +69,7 @@ def index():
 
 
 if __name__ == "__main__":
+    sc.Base.metadata.create_all(bind=sc.engine)
     if not hf.checkIfUserExists(sc.sessionLocal, sc.chatBot.name):
         hf.createNewUserEntry(
             sc.sessionLocal, sc.chatBot.name, sc.chatBot.name, sc.chatBot.img
