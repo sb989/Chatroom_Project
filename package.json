@@ -16,9 +16,7 @@
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
     "jquery": "^3.2.1",
-    "react": "^16.12.0",
     "react-bootstrap": "^0.31.0",
-    "react-dom": "^16.12.0",
     "style-loader": "^0.18.2",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
@@ -31,6 +29,8 @@
   },
   "dependencies": {
     "moment": "^2.29.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-google-login": "^5.1.21",
     "socket.io-client": "^2.3.1"
   }
